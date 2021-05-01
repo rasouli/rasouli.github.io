@@ -10,6 +10,6 @@ Hi! My name is Reza Rasouli, I am a software enthusiast and here I write about t
 
 Lets get in touch!
 - Email: rzrso at fastmail dot com
-- [Twitter](https://www.linkedin.com/in/rezarasouli/)
+- [Twitter](https://twitter.com/rasoulive)
 - [Github](https://github.com/rasouli)
 - [LinkedIn](https://www.linkedin.com/in/rezarasouli/)
