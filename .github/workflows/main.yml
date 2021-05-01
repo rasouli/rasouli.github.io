@@ -29,10 +29,3 @@ jobs:
           PAGES_BRANCH: gh-pages
           # Provide personal access token
           TOKEN: ${{ secrets.ZGA }}
-      - name: Write CNAME
-        uses: DamianReeves/write-file-action@v1.0
-        with:
-          path: ${{ env.home}}/CNAME
-          contents: |
-            echo "www.rzrso.com"
-          write-mode: overwrite
