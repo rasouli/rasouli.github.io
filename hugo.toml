@@ -1,0 +1,36 @@
+baseURL = 'https://reza.rs/'
+languageCode = 'en-us'
+title = 'Random Walks & Racing Thoughts'
+author =  "Reza Rasouli"
+paginate = 10
+pygmentsstyle = "colorful"
+pygmentscodefences = true
+pygmentscodefencesguesssyntax = true
+theme = 'hugo-vitae'
+
+[params]
+keywords = ["software", "software engineering", "distributed systems", "backend", "application", "server", "concurrent"]
+subtitle = "writing on what has inspired [me](https://github.com/rasouli) about software and machines."
+math = true
+avatar = "avatar.jpeg"
+mainSections = ["post"]
+
+[[menu.main]]
+name = "Home"
+url = "/"
+weight = 1
+
+[[menu.main]]
+name = "Posts"
+url = "/post"
+weight = 2
+
+[[menu.main]]
+name = "Categories"
+url = "/categories"
+weight = 3
+
+[[menu.main]]
+name = "About"
+url = "/about"
+weight = 4
