@@ -1,9 +1,11 @@
-use std::error::Error;
+use std::{error::Error, iter};
 
 use clap::Parser;
 
 // *.
 use ipnet::Ipv4Net;
+
+use anyhow::{anyhow, Context, Result};
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -16,8 +18,8 @@ struct PortScannerArgs {
 // *
 struct SubnetScanConfiguration {
     subnet: Ipv4Net,
-    port_begin: u8,
-    port_end: u8,
+    begin_port: u16,
+    end_port: u16,
 }
 
 fn main() {
@@ -36,20 +38,130 @@ fn main() {
     println!("all  good.");
 }
 
-fn parse_ports_ranges(port_range: String) -> Option<(u8, u8)> {
-    port_range
-        .split_once(':')
-        .and_then(|(begin_port_str, end_port_str)| {
-            let begin_port = u8::from_str_radix(begin_port_str, 10)?;
-            let end_port = u8::from_str_radix(end_port_str, 10).;
-            (begin_port, end_port)
-        })
+fn parse_subnet(subnet: String) -> Result<Ipv4Net> {
+    subnet
+        .parse::<Ipv4Net>()
+        .context(format!("Unable to parse subnet: {}", subnet))
 }
 
-fn parse_subnets(subnet: String) -> Option<Ipv4Net> {}
+fn parse_port_ranges(port_range: String) -> Result<(u16, u16)> {
+    let (begin_port_str, end_port_str) = port_range
+        .split_once(':')
+        .context("Port ranges should be seperated in following format: [begin_port]:[end_port]")?;
 
-fn prepare_subnet_and_ports(
+    if begin_port_str.is_empty() || end_port_str.is_empty() {
+        return Err(anyhow!(
+            "Empty port values given in the port range {}",
+            port_range
+        ));
+    }
+
+    let begin_port = begin_port_str
+        .parse::<u16>()
+        .context(format!(
+            "Unable to parse the begining of port range: {}",
+            begin_port_str
+        ))?;
+
+    let end_port = end_port_str
+        .parse::<u16>()
+        .context(format!(
+            "Unable to parse the end of port range: {}",
+            end_port_str
+        ))?;
+
+    if begin_port > end_port {
+        return Err(anyhow!(
+            "Begin port {} is bigger than the end port {}",
+            begin_port,
+            end_port
+        ));
+    }
+
+    Ok((begin_port, end_port))
+}
+
+fn prepare_subnets_and_ports(
     subnets: Vec<String>,
-    ports_ranges: Vec<String>,
-) -> Result<Vec<SubnetScanConfiguration>, Box<dyn Error>> {
+    port_ranges: Vec<String>,
+) -> Vec<Result<SubnetScanConfiguration>> {
+    subnets
+        .into_iter()
+        .zip(port_ranges)
+        .map(|(subnet_str, port_range_str)| {
+            parse_subnet(subnet_str).and_then(|subnet| {
+                parse_port_ranges(port_range_str).map(|(begin_port, end_port)| {
+                    SubnetScanConfiguration {
+                        subnet,
+                        begin_port,
+                        end_port,
+                    }
+                })
+            })
+        })
+        .collect()
+}
+
+#[cfg(test)]
+mod tests {
+
+    use std::net::Ipv4Addr;
+
+    use super::*;
+
+    #[test]
+    fn parse_port_ranges_test() {
+        assert_eq!(
+            (5000_u16, 8000_u16),
+            parse_port_ranges(String::from("5000:8000")).unwrap()
+        );
+
+        assert_eq!(
+            "Port ranges should be seperated in following format: [begin_port]:[end_port]",
+            parse_port_ranges(String::from("garBage"))
+                .err()
+                .unwrap()
+                .to_string()
+        );
+
+        assert_eq!(
+            format!("Unable to parse the begining of port range: {}", "garBage"),
+            parse_port_ranges(String::from("garBage:5000"))
+                .err()
+                .unwrap()
+                .to_string()
+        );
+
+        assert_eq!(
+            format!("Unable to parse the end of port range: {}", "garBage"),
+            parse_port_ranges(String::from("5000:garBage"))
+                .err()
+                .unwrap()
+                .to_string()
+        );
+
+        assert_eq!(
+            format!("Begin port {} is bigger than the end port {}", 8000, 5000),
+            parse_port_ranges(String::from("8000:5000"))
+                .err()
+                .unwrap()
+                .to_string()
+        );
+    }
+
+    #[test]
+    fn parse_subnet_test() {
+        assert_eq!(
+            format!("Unable to parse subnet: {}", "garBage"),
+            parse_subnet(String::from("garBage"))
+                .err()
+                .unwrap()
+                .to_string()
+        );
+
+        assert_eq!(
+            Ipv4Net::new(Ipv4Addr::new(172, 16, 0, 0), 16).unwrap(),
+            parse_subnet(String::from("172.16.0.0/16")).unwrap()
+        )
+    }
 }
