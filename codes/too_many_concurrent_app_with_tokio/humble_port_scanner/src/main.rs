@@ -13,7 +13,9 @@ use tokio::{task, time};
 
 use crate::models::PortScannerArgs;
 
+mod app;
 mod arg_helpers;
+mod errors;
 mod models;
 mod port_helpers;
 mod subnet_helpers;

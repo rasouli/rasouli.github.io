@@ -18,14 +18,14 @@ pub struct SubnetScanConfiguration {
     pub end_port: u16,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub struct IpPortScanResult {
     pub ip: Ipv4Addr,
     pub port: u16,
     pub state: PortState,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub enum PortState {
     Open,
     Closed,

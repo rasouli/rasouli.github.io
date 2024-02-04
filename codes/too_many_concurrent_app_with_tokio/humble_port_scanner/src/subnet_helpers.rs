@@ -1,20 +1,6 @@
 use anyhow::Context;
 use ipnet::Ipv4Net;
 
-use crate::models::SubnetScanConfiguration;
-
-pub async fn scan_ipv4_subnet(scan_configuration: SubnetScanConfiguration) {
-    let SubnetScanConfiguration {
-        subnet,
-        begin_port,
-        end_port,
-    } = scan_configuration;
-
-    for ip in subnet.hosts() {
-        for port in begin_port..end_port {}
-    }
-}
-
 pub fn parse_subnet(subnet: String) -> anyhow::Result<Ipv4Net> {
     subnet
         .parse::<Ipv4Net>()
