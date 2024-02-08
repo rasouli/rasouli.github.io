@@ -18,6 +18,7 @@ mod arg_helpers;
 mod errors;
 mod models;
 mod port_helpers;
+mod scan_stream;
 mod subnet_helpers;
 mod tokio_helpers;
 

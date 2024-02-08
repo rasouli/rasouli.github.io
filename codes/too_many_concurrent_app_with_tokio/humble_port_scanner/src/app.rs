@@ -39,11 +39,6 @@ pub async fn launch_subnet_scan_tasks(
         .collect()
 }
 
-// TODO: merge channels into tokio stream
-//   use the tokio stream to calculate the progress in each subnet
-//   use ratatui to display : progress bar per each subnet and a scrollable table to
-//   present the scan result.
-
 pub async fn scan_ipv4_subnet(
     scan_configuration: SubnetScanConfiguration,
     scan_timeout: Duration,
