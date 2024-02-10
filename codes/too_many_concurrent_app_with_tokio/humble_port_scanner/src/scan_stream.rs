@@ -6,29 +6,24 @@
 use std::{future::Future, pin::Pin};
 
 use futures_core::Stream;
-use ipnet::Ipv4Subnets;
+use ipnet::Ipv4Net;
 use tokio::sync::mpsc::UnboundedReceiver;
-use tokio_stream::{StreamExt, StreamMap, StreamNotifyClose};
+use tokio_stream::{StreamMap, StreamNotifyClose};
 
 use crate::models::IpPortScanResult;
 
-struct ScanResultStreamer {
+pub struct ScanResultStreamer {
     futures: Vec<Box<dyn Future<Output = ()>>>,
     stream_map: Pin<
-        Box<
-            StreamMap<
-                Ipv4Subnets,
-                StreamNotifyClose<Pin<Box<dyn Stream<Item = IpPortScanResult>>>>,
-            >,
-        >,
+        Box<StreamMap<Ipv4Net, StreamNotifyClose<Pin<Box<dyn Stream<Item = IpPortScanResult>>>>>>,
     >,
 }
 
 impl ScanResultStreamer {
     pub fn new(
         scan_tasks: Vec<(
-            Ipv4Subnets,
-            Box<dyn Future<Output = ()> + 'static>,
+            Ipv4Net,
+            Box<impl Future<Output = ()> + 'static>,
             UnboundedReceiver<IpPortScanResult>,
         )>,
     ) -> Self {
@@ -60,7 +55,7 @@ impl ScanResultStreamer {
 }
 
 impl Stream for ScanResultStreamer {
-    type Item = (Ipv4Subnets, Option<IpPortScanResult>);
+    type Item = (Ipv4Net, Option<IpPortScanResult>);
 
     fn poll_next(
         mut self: Pin<&mut Self>,

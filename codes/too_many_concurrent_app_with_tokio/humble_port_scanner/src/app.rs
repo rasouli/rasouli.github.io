@@ -1,7 +1,12 @@
-use std::{future::Future, sync::mpsc::Receiver, time::Duration};
+use std::{
+    future::Future,
+    sync::{mpsc::Receiver, Arc},
+    time::Duration,
+};
 
+use ipnet::Ipv4Net;
 use tokio::{
-    runtime::Handle,
+    runtime::{Handle, Runtime},
     sync::mpsc::{self, unbounded_channel, UnboundedReceiver},
 };
 
@@ -13,12 +18,13 @@ use crate::{
 
 use anyhow::bail;
 
-pub async fn launch_subnet_scan_tasks(
+pub async fn launch_subnet_scan_tasks<'a>(
     subnet_scan_configurations: Vec<SubnetScanConfiguration>,
     scan_timeout: Duration,
-    handle: &'static Handle,
+    runtime: Arc<Runtime>,
 ) -> Vec<(
-    Box<impl Future<Output = ()> + 'static>,
+    Ipv4Net,
+    Box<impl Future<Output = ()>>,
     UnboundedReceiver<IpPortScanResult>,
 )> {
     subnet_scan_configurations
@@ -26,15 +32,16 @@ pub async fn launch_subnet_scan_tasks(
         .map(|config| {
             let (tx, rx) = mpsc::unbounded_channel::<IpPortScanResult>();
 
-            let scan_name = format!("scan_{}", config.subnet.to_string());
+            let subnet = config.subnet.clone();
+            let scan_name = format!("scan_{}", subnet.to_string());
 
             let scan_fut = tokio_helpers::run_named_task(
                 scan_name,
-                handle,
+                runtime.clone(),
                 scan_ipv4_subnet(config, scan_timeout, tx),
             );
 
-            (Box::new(scan_fut), rx)
+            (subnet, Box::new(scan_fut), rx)
         })
         .collect()
 }
