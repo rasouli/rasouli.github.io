@@ -1,9 +1,4 @@
-// TODO: merge channels into tokio stream
-//   use the tokio stream to calculate the progress in each subnet
-//   use ratatui to display : progress bar per each subnet and a scrollable table to
-//   present the scan result.
-
-use std::{future::Future, pin::Pin};
+use std::pin::Pin;
 
 use futures_core::Stream;
 use ipnet::Ipv4Net;
@@ -13,32 +8,21 @@ use tokio_stream::{StreamMap, StreamNotifyClose};
 use crate::models::IpPortScanResult;
 
 pub struct ScanResultStreamer {
-    futures: Vec<Box<dyn Future<Output = ()>>>,
     stream_map: Pin<
         Box<StreamMap<Ipv4Net, StreamNotifyClose<Pin<Box<dyn Stream<Item = IpPortScanResult>>>>>>,
     >,
 }
 
 impl ScanResultStreamer {
-    pub fn new(
-        scan_tasks: Vec<(
-            Ipv4Net,
-            Box<impl Future<Output = ()> + 'static>,
-            UnboundedReceiver<IpPortScanResult>,
-        )>,
-    ) -> Self {
-        let mut futures: Vec<Box<dyn Future<Output = ()>>> = Vec::new();
+    pub fn new(scan_tasks: Vec<(Ipv4Net, UnboundedReceiver<IpPortScanResult>)>) -> Self {
         let mut stream_map = StreamMap::new();
 
-        for (subnet, scan_task, rx) in scan_tasks {
+        for (subnet, rx) in scan_tasks {
             let rx_stream = StreamNotifyClose::new(Self::make_stream(rx));
-
             stream_map.insert(subnet, rx_stream);
-            futures.push(scan_task);
         }
 
         Self {
-            futures,
             stream_map: Box::pin(stream_map),
         }
     }

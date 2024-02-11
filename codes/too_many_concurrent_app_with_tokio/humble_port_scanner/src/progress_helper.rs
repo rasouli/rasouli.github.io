@@ -41,7 +41,7 @@ impl ScanProgress {
         }
     }
 
-    pub async fn present_progress(&mut self) {
+    pub async fn present_progress(mut self) {
         // while let Some(subnet, scan_result) = self.scan_streamer.next().await {}
         while let Some((subnet, scan_result)) = self.scan_streamer.next().await {
             match scan_result {
@@ -52,7 +52,6 @@ impl ScanProgress {
     }
 
     pub fn update_progress(&mut self, subnet: &Ipv4Net) {
-        println!("progress...");
         self.subnet_progress
             .entry(*subnet)
             .and_modify(|v| *v += 1);

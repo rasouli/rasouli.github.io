@@ -1,5 +1,6 @@
 use std::{
     future::Future,
+    pin::Pin,
     sync::{mpsc::Receiver, Arc},
     time::Duration,
 };
@@ -24,7 +25,7 @@ pub async fn launch_subnet_scan_tasks<'a>(
     runtime: Arc<Runtime>,
 ) -> Vec<(
     Ipv4Net,
-    Box<impl Future<Output = ()>>,
+    Pin<Box<impl Future<Output = ()>>>,
     UnboundedReceiver<IpPortScanResult>,
 )> {
     subnet_scan_configurations
@@ -41,7 +42,7 @@ pub async fn launch_subnet_scan_tasks<'a>(
                 scan_ipv4_subnet(config, scan_timeout, tx),
             );
 
-            (subnet, Box::new(scan_fut), rx)
+            (subnet, Box::pin(scan_fut), rx)
         })
         .collect()
 }

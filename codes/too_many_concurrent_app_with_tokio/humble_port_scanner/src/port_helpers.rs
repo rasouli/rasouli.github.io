@@ -9,7 +9,6 @@ pub async fn check_port_status_with_timeout(
     port: u16,
     timeout: Duration,
 ) -> IpPortScanResult {
-    println!("scan start");
     let stream = time::timeout(timeout, async { TcpStream::connect((ip, port)).await }).await;
 
     let state = match stream {
@@ -18,7 +17,6 @@ pub async fn check_port_status_with_timeout(
         _ => PortState::Closed,
     };
 
-    println!("scan");
     IpPortScanResult { ip, port, state }
 }
 

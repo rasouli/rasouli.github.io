@@ -1,4 +1,5 @@
 use std::iter::zip;
+use std::pin::Pin;
 use std::time::Duration;
 use std::{error::Error, future::Future, iter, net::Ipv4Addr, sync::Arc};
 
@@ -10,10 +11,11 @@ use anyhow::{anyhow, bail, Context, Result};
 use tokio::net::TcpStream;
 use tokio::runtime::{self, Runtime};
 
+use tokio::sync::mpsc::UnboundedReceiver;
 use tokio::{task, time};
 
 use crate::app::launch_subnet_scan_tasks;
-use crate::models::PortScannerArgs;
+use crate::models::{IpPortScanResult, PortScannerArgs};
 use crate::progress_helper::ScanProgress;
 use crate::scan_stream::ScanResultStreamer;
 
@@ -68,14 +70,24 @@ fn main() -> anyhow::Result<()> {
             )
             .await;
 
-            println!("tasks launched!");
-            let scan_streamer = ScanResultStreamer::new(scan_tasks);
-            let mut scan_progress = ScanProgress::new(scan_streamer, ipv4_subnets);
-            scan_progress
-                .present_progress()
-                .await;
+            // seperate the futures
+            let mut futs: Vec<Pin<Box<dyn Future<Output = ()>>>> = Vec::new();
+            let mut subnets_to_rxs: Vec<(Ipv4Net, UnboundedReceiver<IpPortScanResult>)> =
+                Vec::new();
+
+            for (subnet, fut, rx) in scan_tasks {
+                subnets_to_rxs.push((subnet, rx));
+                futs.push(fut);
+            }
+
+            let scan_streamer = ScanResultStreamer::new(subnets_to_rxs);
+            let scan_progress = ScanProgress::new(scan_streamer, ipv4_subnets);
+            let progress_fut = scan_progress.present_progress();
+
+            futs.push(Box::pin(progress_fut));
+
+            futures::future::join_all(futs).await;
         });
 
-    println!("all  done.");
     Ok(())
 }
