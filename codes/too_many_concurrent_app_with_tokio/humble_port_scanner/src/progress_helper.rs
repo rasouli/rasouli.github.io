@@ -1,9 +1,7 @@
-use std::{collections::HashMap, ops::Add};
-
+use std::collections::HashMap;
 
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use ipnet::Ipv4Net;
-
 
 pub struct ScanProgressTracker {
     subnet_to_pb: HashMap<Ipv4Net, ProgressBar>,

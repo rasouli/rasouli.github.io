@@ -4,8 +4,6 @@ use std::time::Duration;
 use app::SubnetScannerApp;
 use clap::Parser;
 
-use ipnet::Ipv4Net;
-
 use anyhow::bail;
 
 use crate::models::PortScannerArgs;
@@ -33,20 +31,7 @@ fn main() -> anyhow::Result<()> {
         )
     }
 
-    let mut subnet_scan_configurations: Vec<models::SubnetScanConfiguration> = Vec::new();
-    let mut ipv4_subnets: Vec<Ipv4Net> = Vec::new();
-
-    for (subnet, port_ranges) in Iterator::zip(subnets.into_iter(), ports.into_iter()) {
-        let (begin_port, end_port) = arg_helpers::parse_port_ranges(port_ranges)?;
-        let subnet = subnet_helpers::parse_subnet(subnet)?;
-        ipv4_subnets.push(subnet);
-        subnet_scan_configurations.push(models::SubnetScanConfiguration {
-            subnet,
-            begin_port,
-            end_port,
-        });
-    }
-
+    let subnet_scan_configurations = arg_helpers::prepare_subnets_and_port_ranges(subnets, ports)?;
     let runtime = Arc::new(tokio_helpers::setup_tokio_runtime());
     let _scan_timeout = Duration::from_secs(SCAN_TIMEOUT_SEC);
 

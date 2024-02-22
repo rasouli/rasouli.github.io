@@ -11,7 +11,7 @@ where
     F: Future + Send + 'static,
     F::Output: Send + 'static,
 {
-    task::Builder::new()
+    let _ = task::Builder::new()
         .name(&task_name)
         .spawn_on(fut, runtime.handle())
         .unwrap()

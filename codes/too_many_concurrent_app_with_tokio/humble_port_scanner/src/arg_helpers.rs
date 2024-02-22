@@ -2,10 +2,10 @@ use crate::{models::SubnetScanConfiguration, subnet_helpers::parse_subnet};
 use anyhow::anyhow;
 use anyhow::Context;
 
-fn prepare_subnets_and_port_ranges(
+pub fn prepare_subnets_and_port_ranges(
     subnets: Vec<String>,
     port_ranges: Vec<String>,
-) -> Vec<anyhow::Result<SubnetScanConfiguration>> {
+) -> anyhow::Result<Vec<SubnetScanConfiguration>> {
     subnets
         .into_iter()
         .zip(port_ranges)
