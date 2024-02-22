@@ -20,7 +20,7 @@ pub struct ScanResultStreamer {
 
 impl ScanResultStreamer {
     pub fn new() -> Self {
-        let mut stream_map = StreamMap::new();
+        let stream_map = StreamMap::new();
 
         Self {
             stream_map: Box::pin(stream_map),
@@ -30,7 +30,7 @@ impl ScanResultStreamer {
     pub fn add_stream_from_rx(
         &mut self,
         key: Ipv4Net,
-        mut rx: UnboundedReceiver<IpPortScanResult>,
+        rx: UnboundedReceiver<IpPortScanResult>,
     ) {
         let rx_stream = StreamNotifyClose::new(ScanResultStreamer::make_stream(rx));
         self.stream_map

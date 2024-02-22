@@ -1,9 +1,9 @@
 use std::{collections::HashMap, ops::Add};
 
-use crate::{models::IpPortScanResult, scan_stream::ScanResultStreamer};
+
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use ipnet::Ipv4Net;
-use tokio_stream::StreamExt;
+
 
 pub struct ScanProgressTracker {
     subnet_to_pb: HashMap<Ipv4Net, ProgressBar>,
@@ -16,9 +16,9 @@ pub struct ScanProgressTracker {
 impl ScanProgressTracker {
     pub fn new(progress_bar_size: u64) -> Self {
         let multi_pb = MultiProgress::new();
-        let mut subnet_to_pb: HashMap<Ipv4Net, ProgressBar> = HashMap::new();
-        let mut subnet_progress: HashMap<Ipv4Net, u64> = HashMap::new();
-        let mut subnet_total_scans: HashMap<Ipv4Net, u64> = HashMap::new();
+        let subnet_to_pb: HashMap<Ipv4Net, ProgressBar> = HashMap::new();
+        let subnet_progress: HashMap<Ipv4Net, u64> = HashMap::new();
+        let subnet_total_scans: HashMap<Ipv4Net, u64> = HashMap::new();
 
         Self {
             subnet_progress,

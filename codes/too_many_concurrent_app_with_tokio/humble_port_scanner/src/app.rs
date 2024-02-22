@@ -81,18 +81,18 @@ impl SubnetScannerApp {
     }
 
     pub fn run(mut self) {
-        let runtime = self.runtime.clone();
+        let runtime = self.runtime;
         let mut scan_stream = self.scan_results;
         let mut scan_progress = self.scan_progress;
         let mut tasks = self.scan_futures;
         let progerss_fut = tokio_helpers::run_named_task(
             String::from("stream_progress"),
-            runtime,
+            runtime.clone(),
             Self::stream_progress(scan_stream, scan_progress),
         );
 
         tasks.push(Box::pin(progerss_fut));
-        futures::future::join_all(tasks);
+        runtime.block_on(futures::future::join_all(tasks));
     }
 
     async fn scan_ipv4_subnet(

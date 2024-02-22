@@ -1,7 +1,7 @@
 use std::{net::Ipv4Addr, time::Duration};
 
 use crate::models::{IpPortScanResult, PortState};
-use anyhow::{anyhow, Context};
+
 use tokio::{net::TcpStream, time};
 
 pub async fn check_port_status_with_timeout(

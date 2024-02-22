@@ -1,23 +1,23 @@
-use std::iter::zip;
-use std::pin::Pin;
+
+
 use std::time::Duration;
-use std::{error::Error, future::Future, iter, net::Ipv4Addr, sync::Arc};
+use std::{sync::Arc};
 
 use app::SubnetScannerApp;
 use clap::Parser;
 
 use ipnet::Ipv4Net;
 
-use anyhow::{anyhow, bail, Context, Result};
-use tokio::net::TcpStream;
-use tokio::runtime::{self, Runtime};
+use anyhow::{bail};
 
-use tokio::sync::mpsc::UnboundedReceiver;
-use tokio::{task, time};
 
-use crate::models::{IpPortScanResult, PortScannerArgs};
-use crate::progress_helper::ScanProgressTracker;
-use crate::scan_stream::ScanResultStreamer;
+
+
+
+
+use crate::models::{PortScannerArgs};
+
+
 
 mod app;
 mod arg_helpers;
@@ -57,7 +57,7 @@ fn main() -> anyhow::Result<()> {
     }
 
     let runtime = Arc::new(tokio_helpers::setup_tokio_runtime());
-    let scan_timeout = Duration::from_secs(SCAN_TIMEOUT_SEC);
+    let _scan_timeout = Duration::from_secs(SCAN_TIMEOUT_SEC);
 
     let app = SubnetScannerApp::builder()
         .set_configs(subnet_scan_configurations)
