@@ -1,23 +1,14 @@
-
-
+use std::sync::Arc;
 use std::time::Duration;
-use std::{sync::Arc};
 
 use app::SubnetScannerApp;
 use clap::Parser;
 
 use ipnet::Ipv4Net;
 
-use anyhow::{bail};
+use anyhow::bail;
 
-
-
-
-
-
-use crate::models::{PortScannerArgs};
-
-
+use crate::models::PortScannerArgs;
 
 mod app;
 mod arg_helpers;
@@ -59,12 +50,13 @@ fn main() -> anyhow::Result<()> {
     let runtime = Arc::new(tokio_helpers::setup_tokio_runtime());
     let _scan_timeout = Duration::from_secs(SCAN_TIMEOUT_SEC);
 
-    let app = SubnetScannerApp::builder()
+    let mut app = SubnetScannerApp::builder()
         .set_configs(subnet_scan_configurations)
         .set_scan_timeout(Duration::from_secs(SCAN_TIMEOUT_SEC))
         .set_runtime(&runtime)
         .build()?;
 
+    app.start_subnet_scans();
     app.run();
 
     Ok(())
