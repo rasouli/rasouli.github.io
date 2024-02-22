@@ -1,15 +1,14 @@
 use std::{
-    collections::HashMap,
     future::Future,
     pin::Pin,
-    sync::{mpsc::Receiver, Arc},
+    sync::{Arc},
     time::Duration,
 };
 
-use ipnet::Ipv4Net;
+
 use tokio::{
-    runtime::{Handle, Runtime},
-    sync::mpsc::{self, unbounded_channel, UnboundedReceiver},
+    runtime::{Runtime},
+    sync::mpsc::{self},
 };
 use tokio_stream::StreamExt;
 
@@ -74,16 +73,16 @@ impl SubnetScannerApp {
     ) {
         while let Some((subnet, scan_result)) = scan_stream.next().await {
             match scan_result {
-                Some(port_scan_result) => scan_progress.update_progress(subnet),
+                Some(_port_scan_result) => scan_progress.update_progress(subnet),
                 None => scan_progress.complete_progress(subnet),
             }
         }
     }
 
-    pub fn run(mut self) {
+    pub fn run(self) {
         let runtime = self.runtime;
-        let mut scan_stream = self.scan_results;
-        let mut scan_progress = self.scan_progress;
+        let scan_stream = self.scan_results;
+        let scan_progress = self.scan_progress;
         let mut tasks = self.scan_futures;
         let progerss_fut = tokio_helpers::run_named_task(
             String::from("stream_progress"),
