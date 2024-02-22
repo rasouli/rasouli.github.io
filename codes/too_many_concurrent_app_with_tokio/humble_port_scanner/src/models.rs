@@ -12,6 +12,7 @@ pub struct PortScannerArgs {
     pub ports: Vec<String>,
 }
 
+#[derive(Debug, Copy, Clone)]
 pub struct SubnetScanConfiguration {
     pub subnet: Ipv4Net,
     pub begin_port: u16,

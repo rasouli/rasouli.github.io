@@ -3,6 +3,7 @@ use std::pin::Pin;
 use std::time::Duration;
 use std::{error::Error, future::Future, iter, net::Ipv4Addr, sync::Arc};
 
+use app::SubnetScannerApp;
 use clap::Parser;
 
 use ipnet::Ipv4Net;
@@ -14,9 +15,8 @@ use tokio::runtime::{self, Runtime};
 use tokio::sync::mpsc::UnboundedReceiver;
 use tokio::{task, time};
 
-use crate::app::launch_subnet_scan_tasks;
 use crate::models::{IpPortScanResult, PortScannerArgs};
-use crate::progress_helper::ScanProgress;
+use crate::progress_helper::ScanProgressTracker;
 use crate::scan_stream::ScanResultStreamer;
 
 mod app;
@@ -58,36 +58,14 @@ fn main() -> anyhow::Result<()> {
 
     let runtime = Arc::new(tokio_helpers::setup_tokio_runtime());
     let scan_timeout = Duration::from_secs(SCAN_TIMEOUT_SEC);
-    //    app::launch_subnet_scan_tasks(subnet_scan_configurations, scan_timeout, runtime.handle());
 
-    runtime
-        .clone()
-        .block_on(async move {
-            let scan_tasks = app::launch_subnet_scan_tasks(
-                subnet_scan_configurations,
-                scan_timeout,
-                runtime.clone(),
-            )
-            .await;
+    let app = SubnetScannerApp::builder()
+        .set_configs(subnet_scan_configurations)
+        .set_scan_timeout(Duration::from_secs(SCAN_TIMEOUT_SEC))
+        .set_runtime(&runtime)
+        .build()?;
 
-            // seperate the futures
-            let mut futs: Vec<Pin<Box<dyn Future<Output = ()>>>> = Vec::new();
-            let mut subnets_to_rxs: Vec<(Ipv4Net, UnboundedReceiver<IpPortScanResult>)> =
-                Vec::new();
-
-            for (subnet, fut, rx) in scan_tasks {
-                subnets_to_rxs.push((subnet, rx));
-                futs.push(fut);
-            }
-
-            let scan_streamer = ScanResultStreamer::new(subnets_to_rxs);
-            let scan_progress = ScanProgress::new(scan_streamer, ipv4_subnets);
-            let progress_fut = scan_progress.present_progress();
-
-            futs.push(Box::pin(progress_fut));
-
-            futures::future::join_all(futs).await;
-        });
+    app.run();
 
     Ok(())
 }

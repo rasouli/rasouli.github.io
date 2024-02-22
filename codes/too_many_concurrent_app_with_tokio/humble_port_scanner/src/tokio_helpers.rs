@@ -2,18 +2,19 @@ use std::{future::Future, sync::Arc};
 
 use tokio::{
     runtime::{self, Handle, Runtime},
+    sync::Mutex,
     task,
 };
 
 // requires setting up the .cargo/config.toml
-pub async fn run_named_task<F>(task_name: String, handle: Arc<Runtime>, fut: F)
+pub async fn run_named_task<F>(task_name: String, runtime: Arc<Runtime>, fut: F)
 where
     F: Future + Send + 'static,
     F::Output: Send + 'static,
 {
     task::Builder::new()
         .name(&task_name)
-        .spawn_on(fut, handle.handle())
+        .spawn_on(fut, runtime.handle())
         .unwrap()
         .await;
 }

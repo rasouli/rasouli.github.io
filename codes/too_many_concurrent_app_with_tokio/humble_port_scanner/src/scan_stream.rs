@@ -9,27 +9,37 @@ use crate::models::IpPortScanResult;
 
 pub struct ScanResultStreamer {
     stream_map: Pin<
-        Box<StreamMap<Ipv4Net, StreamNotifyClose<Pin<Box<dyn Stream<Item = IpPortScanResult>>>>>>,
+        Box<
+            StreamMap<
+                Ipv4Net,
+                StreamNotifyClose<Pin<Box<dyn Stream<Item = IpPortScanResult> + Send>>>,
+            >,
+        >,
     >,
 }
 
 impl ScanResultStreamer {
-    pub fn new(scan_tasks: Vec<(Ipv4Net, UnboundedReceiver<IpPortScanResult>)>) -> Self {
+    pub fn new() -> Self {
         let mut stream_map = StreamMap::new();
-
-        for (subnet, rx) in scan_tasks {
-            let rx_stream = StreamNotifyClose::new(Self::make_stream(rx));
-            stream_map.insert(subnet, rx_stream);
-        }
 
         Self {
             stream_map: Box::pin(stream_map),
         }
     }
 
+    pub fn add_stream_from_rx(
+        &mut self,
+        key: Ipv4Net,
+        mut rx: UnboundedReceiver<IpPortScanResult>,
+    ) {
+        let rx_stream = StreamNotifyClose::new(ScanResultStreamer::make_stream(rx));
+        self.stream_map
+            .insert(key, rx_stream);
+    }
+
     fn make_stream(
         mut rx: UnboundedReceiver<IpPortScanResult>,
-    ) -> Pin<Box<dyn Stream<Item = IpPortScanResult>>> {
+    ) -> Pin<Box<dyn Stream<Item = IpPortScanResult> + Send>> {
         Box::pin(async_stream::stream! {
                 while let Some(scan_result) = rx.recv().await {
                     yield scan_result;
