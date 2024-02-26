@@ -1,13 +1,13 @@
 use std::{
     future::Future,
     pin::Pin,
-    sync::{Arc},
+    sync::Arc,
     time::Duration,
 };
 
 
 use tokio::{
-    runtime::{Runtime},
+    runtime::Runtime,
     sync::mpsc::{self},
 };
 use tokio_stream::StreamExt;
@@ -43,9 +43,7 @@ impl SubnetScannerApp {
         for config in &self.subnet_scan_configurations {
             let (tx, rx) = mpsc::unbounded_channel::<IpPortScanResult>();
 
-            let config = config.clone();
             let runtime = self.runtime.clone();
-            let timeout = self.scan_timeout.clone();
             let scan_name = format!("scan_{}", config.subnet);
 
             self.scan_results
@@ -59,7 +57,7 @@ impl SubnetScannerApp {
             let scan_fut = tokio_helpers::run_named_task(
                 scan_name,
                 runtime,
-                Self::scan_ipv4_subnet(config, timeout, tx),
+                Self::scan_ipv4_subnet(*config, self.scan_timeout, tx),
             );
 
             self.scan_futures
@@ -84,13 +82,13 @@ impl SubnetScannerApp {
         let scan_stream = self.scan_results;
         let scan_progress = self.scan_progress;
         let mut tasks = self.scan_futures;
-        let progerss_fut = tokio_helpers::run_named_task(
+        let progress_fut = tokio_helpers::run_named_task(
             String::from("stream_progress"),
             runtime.clone(),
             Self::stream_progress(scan_stream, scan_progress),
         );
 
-        tasks.push(Box::pin(progerss_fut));
+        tasks.push(Box::pin(progress_fut));
         runtime.block_on(futures::future::join_all(tasks));
     }
 

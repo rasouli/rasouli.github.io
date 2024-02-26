@@ -26,7 +26,7 @@ pub fn prepare_subnets_and_port_ranges(
 pub fn parse_port_ranges(port_range: String) -> anyhow::Result<(u16, u16)> {
     let (begin_port_str, end_port_str) = port_range
         .split_once(':')
-        .context("Port ranges should be seperated in following format: [begin_port]:[end_port]")?;
+        .context("Port ranges should be separated in following format: [begin_port]:[end_port]")?;
 
     if begin_port_str.is_empty() || end_port_str.is_empty() {
         return Err(anyhow!(
@@ -38,7 +38,7 @@ pub fn parse_port_ranges(port_range: String) -> anyhow::Result<(u16, u16)> {
     let begin_port = begin_port_str
         .parse::<u16>()
         .context(format!(
-            "Unable to parse the begining of port range: {}",
+            "Unable to parse the beginning of port range: {}",
             begin_port_str
         ))?;
 
@@ -72,7 +72,7 @@ mod port_tests {
         );
 
         assert_eq!(
-            "Port ranges should be seperated in following format: [begin_port]:[end_port]",
+            "Port ranges should be separated in following format: [begin_port]:[end_port]",
             parse_port_ranges(String::from("garBage"))
                 .err()
                 .unwrap()
@@ -80,7 +80,7 @@ mod port_tests {
         );
 
         assert_eq!(
-            format!("Unable to parse the begining of port range: {}", "garBage"),
+            format!("Unable to parse the beginning of port range: {}", "garBage"),
             parse_port_ranges(String::from("garBage:5000"))
                 .err()
                 .unwrap()
