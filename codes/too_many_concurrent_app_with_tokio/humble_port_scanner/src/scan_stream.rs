@@ -7,15 +7,14 @@ use tokio_stream::{StreamMap, StreamNotifyClose};
 
 use crate::models::IpPortScanResult;
 
-pub struct ScanResultStreamer {
-    stream_map: Pin<
-        Box<
-            StreamMap<
-                Ipv4Net,
-                StreamNotifyClose<Pin<Box<dyn Stream<Item = IpPortScanResult> + Send>>>,
-            >,
-        >,
+type IpPortScanResultStreamMap = Pin<
+    Box<
+        StreamMap<Ipv4Net, StreamNotifyClose<Pin<Box<dyn Stream<Item = IpPortScanResult> + Send>>>>,
     >,
+>;
+
+pub struct ScanResultStreamer {
+    stream_map: IpPortScanResultStreamMap,
 }
 
 impl ScanResultStreamer {
@@ -27,11 +26,7 @@ impl ScanResultStreamer {
         }
     }
 
-    pub fn add_stream_from_rx(
-        &mut self,
-        key: Ipv4Net,
-        rx: UnboundedReceiver<IpPortScanResult>,
-    ) {
+    pub fn add_stream_from_rx(&mut self, key: Ipv4Net, rx: UnboundedReceiver<IpPortScanResult>) {
         let rx_stream = StreamNotifyClose::new(ScanResultStreamer::make_stream(rx));
         self.stream_map
             .insert(key, rx_stream);

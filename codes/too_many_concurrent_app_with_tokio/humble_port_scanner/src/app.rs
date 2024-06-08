@@ -1,15 +1,10 @@
-use std::{
-    future::Future,
-    pin::Pin,
-    sync::{Arc},
-    time::Duration,
-};
-
+use std::{future::Future, pin::Pin, sync::Arc, time::Duration};
 
 use tokio::{
-    runtime::{Runtime},
+    runtime::Runtime,
     sync::mpsc::{self},
 };
+
 use tokio_stream::StreamExt;
 
 use crate::{
@@ -43,9 +38,8 @@ impl SubnetScannerApp {
         for config in &self.subnet_scan_configurations {
             let (tx, rx) = mpsc::unbounded_channel::<IpPortScanResult>();
 
-            let config = config.clone();
+            // let config = config.clone();
             let runtime = self.runtime.clone();
-            let timeout = self.scan_timeout.clone();
             let scan_name = format!("scan_{}", config.subnet);
 
             self.scan_results
@@ -59,7 +53,7 @@ impl SubnetScannerApp {
             let scan_fut = tokio_helpers::run_named_task(
                 scan_name,
                 runtime,
-                Self::scan_ipv4_subnet(config, timeout, tx),
+                Self::scan_ipv4_subnet(*config, self.scan_timeout, tx),
             );
 
             self.scan_futures

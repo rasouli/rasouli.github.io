@@ -25,7 +25,6 @@ mod port_status_tests {
     use std::{net::Ipv4Addr, time::Duration};
 
     use anyhow::Context;
-    use tokio::sync::oneshot;
 
     use crate::{
         models::{IpPortScanResult, PortState},
@@ -85,7 +84,7 @@ mod port_status_tests {
                 ))
                 .unwrap();
 
-            tokio::time::sleep(Duration::from_millis(200));
+            tokio::time::sleep(Duration::from_millis(200)).await;
         };
 
         // launch the socket handler so we can proceed with the test in current
@@ -95,10 +94,10 @@ mod port_status_tests {
         // define the time interval in which this task needs to succeed, otherwise fail it.
         let mut test_interval_timeout = tokio::time::interval(Duration::from_secs(3));
 
+        let mut received_open_port_scan_result = false;
         loop {
             tokio::select! {
                 _ = test_interval_timeout.tick() => {
-                    assert!(false, "Test could not copmelet within the acceptable time.");
                     break;
                 },
                 scan_result = check_port_status_with_timeout(
@@ -107,11 +106,16 @@ mod port_status_tests {
                         Duration::from_secs(1)) => {
 
                     if let IpPortScanResult{state: PortState::Open, ..} = scan_result {
-                        assert!(true);
+                        received_open_port_scan_result = true;
                         break;
                     }
                 },
             } // select!
         } // loop
+
+        assert_eq!(
+            received_open_port_scan_result, true,
+            "Failed to receive open port scan result in time"
+        );
     }
 }
