@@ -27,6 +27,7 @@ PortClosed for host 192.168.0.1 on port 8001
 PortClosed for host 192.168.0.1 on port 8002
 PortClosed for host 192.168.0.1 on port 8003
 // Rest is omitted
+<<<<<<< Updated upstream
 ```
 
 ### Using Clap to parse arguments
@@ -95,3 +96,15 @@ Let's introduce a new function that parses subnets using `ipnet` and their assoc
 ### Using Tokio Monitors to see what is going on
 
 ### Wrapping Up
+=======
+``` 
+
+## Setting up the basic structure
+
+Now let's setup the basic app structure before proceeding. In this section we will set-up basic app structure before proceeding to next section where we will implement the main functionality using Tokio channels.
+
+### Parsing command line arguments with Clap
+hint use clap arg group
+
+### Iterating through IPs in the Subnet 
+>>>>>>> Stashed changes
