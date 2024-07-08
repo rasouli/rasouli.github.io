@@ -1,20 +1,6 @@
 use std::{cell::RefCell, rc::Rc};
 
 fn main() {
-    let mut root = BinaryTree::new(1);
-
-    let mut nodeA = BinaryTree::new(7);
-    nodeA.left = BinaryTree::wrap(BinaryTree::new(8));
-    nodeA.right = BinaryTree::wrap(BinaryTree::new(9));
-
-    let mut root_l = BinaryTree::new(2);
-    root_l.right = BinaryTree::wrap(nodeA);
-    root.left = BinaryTree::wrap(root_l);
-    root.right = BinaryTree::wrap(BinaryTree::new(3));
-
-    let tree = BinaryTree::wrap(root);
-    let traversal = traversal::morisson_inorder_traversal(&tree);
-    println!("traversal inorder resurt : {:?}", traversal);
     println!("salam")
 }
 
