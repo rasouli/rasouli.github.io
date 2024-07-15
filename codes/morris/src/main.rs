@@ -27,12 +27,9 @@ impl BinaryTree {
 
 mod traversal {
     use crate::BinaryTree;
-    use std::{
-        borrow::{Borrow, BorrowMut},
-        cell::RefCell,
-        rc::Rc,
-    };
+    use std::{cell::RefCell, rc::Rc};
 
+    #[allow(dead_code)]
     pub fn morisson_inorder_traversal(root: &Option<Rc<RefCell<Box<BinaryTree>>>>) -> Vec<i32> {
         let mut inorder_traversal = Vec::<i32>::new();
 
@@ -41,7 +38,7 @@ mod traversal {
         }
 
         let mut current: Option<Rc<RefCell<Box<BinaryTree>>>> = root.clone();
-        let mut predecessor: Option<Rc<RefCell<Box<BinaryTree>>>> = None;
+        let mut predecessor: Option<Rc<RefCell<Box<BinaryTree>>>>;
         while let Some(rc_current_node) = current.clone() {
             {
                 let current_node = rc_current_node.as_ref().borrow();
