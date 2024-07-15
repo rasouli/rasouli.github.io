@@ -1,20 +1,7 @@
 use std::{cell::RefCell, rc::Rc};
 
 fn main() {
-    let mut root = BinaryTree::new(1);
-
-    let mut node_a = BinaryTree::new(7);
-    node_a.left = BinaryTree::wrap(BinaryTree::new(8));
-    node_a.right = BinaryTree::wrap(BinaryTree::new(9));
-
-    let mut root_l = BinaryTree::new(2);
-    root_l.right = BinaryTree::wrap(node_a);
-    root.left = BinaryTree::wrap(root_l);
-    root.right = BinaryTree::wrap(BinaryTree::new(3));
-
-    let tree = BinaryTree::wrap(root);
-    let traversal = traversal::morisson_inorder_traversal(&tree);
-    println!("traversal inorder result : {:?}", traversal);
+    println!("hello world");
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -92,5 +79,28 @@ mod traversal {
         }
 
         inorder_traversal
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use crate::{traversal, BinaryTree};
+
+        #[test]
+        fn inorder_morisson_traversal_tests() {
+            let mut root = BinaryTree::new(1);
+            let mut root_left = BinaryTree::new(2);
+
+            let mut root_left_right = BinaryTree::new(7);
+            root_left_right.left = BinaryTree::wrap(BinaryTree::new(8));
+            root_left_right.right = BinaryTree::wrap(BinaryTree::new(9));
+
+            root_left.right = BinaryTree::wrap(root_left_right);
+            root.left = BinaryTree::wrap(root_left);
+            root.right = BinaryTree::wrap(BinaryTree::new(3));
+
+            let tree = BinaryTree::wrap(root);
+            let traversal = traversal::morisson_inorder_traversal(&tree);
+            assert_eq!(traversal, vec![2, 8, 7, 9, 1, 3]);
+        }
     }
 }
