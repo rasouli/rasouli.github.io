@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
+         <loc>https://pub.reza.rs/</loc>
+         <lastmod>2026-07-11</lastmod>
+    </url>
+    <url>
          <loc>https://pub.reza.rs/about/</loc>
          <lastmod>2025-05-01</lastmod>
+    </url>
+    <url>
+         <loc>https://pub.reza.rs/impressum/</loc>
+         <lastmod>2026-07-11</lastmod>
     </url>
     <url>
          <loc>https://pub.reza.rs/blog/b-2025-05-24-kt-java-nio2-async-channels-p1/</loc>
