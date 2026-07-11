@@ -1,5 +1,7 @@
-# Impressum
-
+---
+title: Impressum
+publish: true
+---
 Angaben gemäß § 5 TMG / § 18 MStV
 
 ## Diensteanbieter / Seitenbetreiber

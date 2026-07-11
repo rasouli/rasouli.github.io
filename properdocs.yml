@@ -4,10 +4,9 @@ site_author: Reza Rasouli
 site_description: Programming, Technology and Machines
 copyright: >
   &copy; 2025-2026 Reza Rasouli
+extra_templates:
+  - CNAME
 
-nav:
-  - Blog: blog.md
-  - About: about.md
 
 theme:
   name: material

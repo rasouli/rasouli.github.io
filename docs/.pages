@@ -1,4 +1,4 @@
 nav:
   - Home: index.md
   - Blog: blog/
-  - about.md
+  - About: about.md

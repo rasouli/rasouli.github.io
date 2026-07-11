@@ -13,4 +13,4 @@ I’m Reza Rasouli. I’ve been a software engineer for about a some years now, 
 - [Github](https://github.com/rasouli)
 - [Email](emailto:hello@reza.rs)
 
-[Impressum](./impressum.md)
+[Impressum](impressum.md)
