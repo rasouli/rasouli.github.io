@@ -1,0 +1,133 @@
+site_name: Random Walks & Racing Thoughts
+site_url: https://pub.reza.rs
+site_author: Reza Rasouli
+site_description: Programming, Technology and Machines
+copyright: >
+  &copy; 2025-2026 Reza Rasouli
+
+nav:
+  - Blog: blog.md
+  - About: about.md
+
+theme:
+  name: material
+  language: en
+  font:
+    code: Lato
+  # custom_dir: overrides
+  logo: blog/assets/logo-r.webp
+  favicon: blog/assets/logo-r.webp
+
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      toggle:
+        icon: material/lightbulb
+        name: Switch to dark mode
+      primary: green
+      accent: green
+
+    # Palette toggle for dark mode
+    - scheme: slate
+      toggle:
+        icon: material/lightbulb-outline
+        name: Switch to light mode
+      primary: green
+      accent: green
+
+  features:
+    - navigation.tabs
+    # - navigation.tabs.sticky
+    - navigation.footer # Prev/Next page
+    - navigation.tracking # Anchor tracking
+    - navigation.top # Back to top
+    - navigation.sections # Useful for an overview
+    - navigation.indexes # Needed for an overview
+    - navigation.instant
+    - navigation.instant.progress
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.action.edit
+    - content.action.view
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - toc.follow
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - nl2br
+  - md_in_html
+  - sane_lists
+  - tables
+  - toc:
+      permalink: true
+      permalink_title: Anchor link to this section for reference
+  # - pymdownx.arithmatex:
+  #     generic: true
+  # - pymdownx.betterem
+  # - pymdownx.critic
+  # - pymdownx.caret
+  # - pymdownx.details
+  # # - pymdownx.emoji:
+  # #     emoji_index: !!python/name:material.extensions.emoji.twemoji
+  # #     emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  # - pymdownx.highlight:
+  #     auto_title: false
+  #     anchor_linenums: true
+  #     line_spans: __span
+  #     pygments_lang_class: true
+  #     use_pygments: true
+  # - pymdownx.inlinehilite
+  # - pymdownx.keys
+  # - pymdownx.magiclink
+  # - pymdownx.mark
+  # - pymdownx.tabbed:
+  #     alternate_style: true
+  #     slugify: !!python/object/apply:pymdownx.slugs.slugify
+  #       kwds:
+  #         case: lower
+  # - pymdownx.tasklist:
+  #     custom_checkbox: true
+  # - pymdownx.tilde
+  # - pymdownx.saneheaders
+  # - pymdownx.smartsymbols
+  # - pymdownx.snippets
+  # - pymdownx.superfences:
+  #     custom_fences:
+  #       - name: mermaid
+  #         class: mermaid
+  #         format: !!python/name:pymdownx.superfences.fence_code_format
+plugins:
+   - awesome-pages
+   - search
+   - redirects:
+       redirect_maps:
+         'b-2025-05-24-kt-java-nio2-async-channels-p1.md' : 'blog/b-2025-05-24-kt-java-nio2-async-channels-p1.md'
+         'b-2025-07-27-kt-java-nio2-async-channels-p2.md': 'blog/b-2025-07-27-kt-java-nio2-async-channels-p2.md'
+         'b-2025-08-16-social-life-software-bc-rel-p1.md': 'blog/b-2025-08-16-social-life-software-bc-rel-p1.md'
+         'b-2025-08-24-social-life-software-bc-rel-p2.md': 'blog/b-2025-08-24-social-life-software-bc-rel-p2.md'
+         'b-2025-08-30-erap-p1.md' : 'blog/b-2025-08-30-erap-p1.md'
+         'b-2026-04-06-itpplnl-p1.md' : 'blog/b-2026-04-06-itpplnl-p1.md'
+   - pub-blog:
+      lang: "en"
+      teaser_marker: "<!-- more -->"
+      translation:
+        teaser_link_text: Read more
+        blog_page_title: Blog
+        blog_navigation_name: Blog
+        recent_blog_posts_navigation_name: Recent posts
+        archive_page_title: Archive
+        archive_navigation_name: Archive
+        categories_page_title: Category
+        categories_navigation_name: Categories
+        tags_page_title: Tag
+        tags_navigation_name: Tags
+        newer_posts: Newer posts
+        older_posts: Older posts
+   - pub-meta
+   

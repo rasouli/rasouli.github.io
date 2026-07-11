@@ -1,13 +1,21 @@
 ---
 title: Kotlin Coroutines and Java NIO 2 Asynchronous Channels (Part I)
-link: b-2025-05-24-kt-java-nio2-async-channels-p1
-published_date: 2025-05-24 00:00
+slug: b-2025-05-24-kt-java-nio2-async-channels-p1
+date: 2025-05-24 00:00:00
+publish: true
+tags: 
+  - java
+  - kotlin
+categories:
+  - NIO
+  - Java
+  - Kotlin
 ---
-# Kotlin Coroutines and Java NIO 2 Asynchronous Channels (Part I)
-## Overview
+
 
 Thanks to Kotlin Coroutines and its ecosystem, we can write much more maintainable code when taking advantage of Java NIO 2 Asynchronous Channels. This two part blog post will showcase how we can fuse Java NIO 2 [AsynchronousServerSocketChannel](https://docs.oracle.com/javase/7/docs/api/java/nio/channels/AsynchronousServerSocketChannel.html) and Kotlin Coroutines together to write a maintainable non-blocking asynchronous network applications.
 
+<!-- more -->
 
 ## Part I: A Callback-based Asynchronous Non-blocking Server using AsynchronousServerSocketChannel in Kotlin
 
@@ -359,4 +367,4 @@ You can use `telnet` to test the [server](https://github.com/rasouli/blog-codes/
 
 ## Wrapping Up Part I
 
-The whole application code can be found [here](https://github.com/rasouli/blog-codes/tree/main/jvm/kotlin-java-nio/kotlin-java-nio). In Part I, we learned how we can create a Non-blocking asynchronous server using Java NIO 2 and Kotlin using its Callback based API. In Part II (stay tuned!) we will continue to take advantage of Kotlin Coroutines to write more maintainable code while achieving the same functionality in [Part II](/b-2025-07-27-kt-java-nio2-async-channels-p2).
+The whole application code can be found [here](https://github.com/rasouli/blog-codes/tree/main/jvm/kotlin-java-nio/kotlin-java-nio). In Part I, we learned how we can create a Non-blocking asynchronous server using Java NIO 2 and Kotlin using its Callback based API. In Part II (stay tuned!) we will continue to take advantage of Kotlin Coroutines to write more maintainable code while achieving the same functionality in [Part II](blog/b-2025-07-27-kt-java-nio2-async-channels-p2.md).
