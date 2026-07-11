@@ -12,13 +12,13 @@
         <meta name="author" content="Reza Rasouli">
       
       
-        <link rel="canonical" href="https://pub.reza.rs/blog/b-2025-08-30-erap-p1/">
+        <link rel="canonical" href="https://pub.reza.rs/blog/b-2026-07-11-properdocs.md/">
       
       
-        <link rel="prev" href="../b-2026-04-06-itpplnl-p1/">
+        <link rel="prev" href="../tags/properdocs/">
       
       
-        <link rel="next" href="../b-2025-08-24-social-life-software-bc-rel-p2/">
+        <link rel="next" href="../b-2026-04-06-itpplnl-p1/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>Engine Rooms of Asynchronous Processing (part 1): Reactor Pattern Conceptual Overview - Random Walks & Racing Thoughts</title>
+        <title>Migrating From Bearblog to Properdocs - Random Walks & Racing Thoughts</title>
       
     
     
@@ -84,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#reactor" class="md-skip">
+        <a href="#markdown-all-the-way" class="md-skip">
           Skip to content
         </a>
       
@@ -117,7 +117,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Engine Rooms of Asynchronous Processing (part 1): Reactor Pattern Conceptual Overview
+              Migrating From Bearblog to Properdocs
             
           </span>
         </div>
@@ -1164,99 +1164,87 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#reactor" class="md-nav__link">
+  <a href="#markdown-all-the-way" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Reactor
+        Markdown All The Way
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Reactor">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#components-of-a-reactor" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Components of a Reactor
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Components of a Reactor">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#resources-sources-that-produce-io-events" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Resources: Sources that produce I/O events
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#event-demultiplexer-resources-whistle-blower" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Event Demultiplexer: Resources whistle blower
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#event-handlers-specific-io-event-caretaker" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Event Handlers: Specific I/O event Caretaker
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#reactor-the-glue" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Reactor: The glue
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#flows-inside-reactor" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Flows inside Reactor
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#next" class="md-nav__link">
+  <a href="#raw-properdocs-blog" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Next
+        Raw Properdocs -&gt; Blog
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#url-redirect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        URL Redirect
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#working-around-annoying-navbar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Working Around Annoying NavBar
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#handling-cname" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Handling CNAME
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#highlighting-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Highlighting Code
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-thank-you" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A Thank You
       
     </span>
   </a>
@@ -1280,42 +1268,87 @@
 
 
 
-  <h1>Engine Rooms of Asynchronous Processing (part 1): Reactor Pattern Conceptual Overview</h1>
+  <h1>Migrating From Bearblog to Properdocs</h1>
 
-<p>"Engine Rooms of Asynchronous Processing" are series of articles exploring patterns used to facilitate concurrent asynchronous programming. The series aims to (eventually) provide a clear understanding of well-established patterns in this space and explore implementing them from scratch.</p>
-<p>The first group of these articles will explore the Reactor pattern.</p>
+<p><img alt="None" src="../assets/bye-bear.jpg" /></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/@hansjurgen007?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Hans-Jurgen Mager</a> on <a href="https://unsplash.com/photos/polar-bear-on-snow-covered-ground-during-daytime-qQWV91TTBrE?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></p>
+</blockquote>
+<p>Some time ago I decided to migrate my blog off of <a href="">Bearblog</a> mainly because I had to pay a subscription fee for attaching my own domain, which I did not like very much. Don't get me wrong, Bearblog provides a great service, but I thought "it is the time" this weekend. In this post I explain how <code>properdocs</code> can help you with that to host your personal blog on top of github pages.</p>
 <!-- more -->
-<h2 id="reactor">Reactor<a class="headerlink" href="#reactor" title="Anchor link to this section for reference">&para;</a></h2>
-<p><img alt="erap_reactor_pattern" src="https://bear-images.sfo2.cdn.digitaloceanspaces.com/reza/erap_reactor_pattern.webp" /></p>
-<p><em>Image is AI generated</em></p>
-<h3 id="components-of-a-reactor">Components of a Reactor<a class="headerlink" href="#components-of-a-reactor" title="Anchor link to this section for reference">&para;</a></h3>
-<h4 id="resources-sources-that-produce-io-events">Resources: Sources that produce I/O events<a class="headerlink" href="#resources-sources-that-produce-io-events" title="Anchor link to this section for reference">&para;</a></h4>
-<p>Also known as <code>Handles</code>, these are sources that need to be monitored. They are simply places where you expect I/O operations to occur.</p>
-<h4 id="event-demultiplexer-resources-whistle-blower">Event Demultiplexer: Resources whistle blower<a class="headerlink" href="#event-demultiplexer-resources-whistle-blower" title="Anchor link to this section for reference">&para;</a></h4>
-<p>Watch over a set of <code>Resource</code>s in synchronous fashion. Synchronous as it blocks the thread it is running in, not resuming until there are some I/O events ready from <code>Resource</code>s.</p>
-<h4 id="event-handlers-specific-io-event-caretaker">Event Handlers:  Specific  I/O event Caretaker<a class="headerlink" href="#event-handlers-specific-io-event-caretaker" title="Anchor link to this section for reference">&para;</a></h4>
-<p>These are code that should be executed when a specific type of I/O event happens on a specific resource.</p>
-<h4 id="reactor-the-glue">Reactor: The glue<a class="headerlink" href="#reactor-the-glue" title="Anchor link to this section for reference">&para;</a></h4>
-<p>Reactor brings everyone together: Resources and Event Handlers. It connects the dots, by Event Demultiplexer: in a for-ever loop, wait for some I/O events to happen on all Resources, execute related event handlers for each one.</p>
-<h3 id="flows-inside-reactor">Flows inside Reactor<a class="headerlink" href="#flows-inside-reactor" title="Anchor link to this section for reference">&para;</a></h3>
-<p>Following interactions happen within a cyclical Reactor flow:</p>
-<ol>
-<li><strong>Registration</strong>:<br />
-   * <em>Client expresses their interest in Events</em>: For a specific Resource, What Handlers should be executed for what specific  I/O event type?  </li>
-<li><strong>Event Loop</strong>:<br />
-   * <em>The reactor hits the ground running</em>: Having a map of Resource events to Event Handlers, A for-ever loop starts within the reactor.  </li>
-<li><strong>Waiting for Events</strong>:<br />
-   * <em>Monitor I/O events in Resources while being nice to CPU</em>: Using the Event Demultiplexer, Reactor waits until some events are available. This step is where Reactor pattern tries its best to not waste any CPU cycle waiting for I/O events to become available. Note that the blocking call to Demultiplexer is made at this point, and the reactor is waiting for I/O events to become available.  </li>
-<li><strong>Dispatching</strong>:<br />
-   * <em>Resources have some events</em>: Event Demultiplexer returns from the previous round of monitoring events, handing over a list of Resources (aka Handles) that have some events ready to be processed.  </li>
-<li><strong>Executing Handlers</strong>:<br />
-   * <em>Reactor runs interested Handler(s)</em>: At this point, the Reactor is ready to pass on the Resource that has some event to the handler that was previously registered in the Registration step. This is also recognized as executing the callback. </li>
-</ol>
-<p>After handlers finish executing (in essence handling the event), Reactor then returns the control to step 2.</p>
-<p>Following sequence diagram summarizes the reactor pattern:<br />
-<img alt="reactor-sequnece-diagram _ Mermaid Chart-2025-08-30-131056" src="https://bear-images.sfo2.cdn.digitaloceanspaces.com/reza/reactor-sequnece-diagram-_-mermaid-chart-2025-08-30-131056.webp" /></p>
-<h2 id="next">Next<a class="headerlink" href="#next" title="Anchor link to this section for reference">&para;</a></h2>
-<p>For the next part, we will look at how we can implement this pattern using JDK, stay tuned ;).</p>
+
+<h2 id="markdown-all-the-way">Markdown All The Way<a class="headerlink" href="#markdown-all-the-way" title="Anchor link to this section for reference">&para;</a></h2>
+<p>Looking for a Markdown centric blogging alternative, I first stumbled upon <a href="https://github.com/mkdocs/mkdocs">Mkdocs</a> which was very promising. It looked simple and straight forward. Unfortunately it seems the upcoming version of Mkdocs would introduce some breaking changes that would break backward compatibility with some plugins (afaik) so thankfully a fork exists called <a href="https://github.com/ProperDocs/properdocs">Properdocs</a>. I decided to enjoy the existing <a href="https://github.com/mkdocs/catalog">catalog</a> of plugins by using only Properdocs to build up my blog.</p>
+<h2 id="raw-properdocs-blog">Raw Properdocs -&gt; Blog<a class="headerlink" href="#raw-properdocs-blog" title="Anchor link to this section for reference">&para;</a></h2>
+<p>As I soon learned, getting started with raw Properdocs does not necessarily mean that you will end up with a full featured blog, so that's where plugins come in place.<br />
+For that I found <a href="https://github.com/mkdocs-publisher/mkdocs-publisher">mkdocs-publisher</a> very handy. This plugin (well more like bundle of plugins) gives you following capabilities:<br />
+- <a href="https://mkdocs-publisher.github.io/setup/general/pub-meta/"><code>pub-meta</code></a> enable you to add metadata to your markdown blog post (things like slug, publish flag, date and title)<br />
+- <a href="https://mkdocs-publisher.github.io/setup/general/pub-blog/"><code>pub-blog</code></a> gives you goodies like building archives, tags and categories</p>
+<p>Note:</p>
+<blockquote>
+<p>There are more plugins in mkdocs-publisher which I highly encourage you to look at, they even have <code>pub-obsidian</code>!<br />
+</p>
+</blockquote>
+<p>Note: </p>
+<blockquote>
+<p>Also <code>pub-blog</code> comes with Material theme out of the box which is Exxxxtraaa nice.</p>
+</blockquote>
+<h2 id="url-redirect">URL Redirect<a class="headerlink" href="#url-redirect" title="Anchor link to this section for reference">&para;</a></h2>
+<p>Another problem I had with migrating my blog off of Bearblog was making my Properdocs blog to map certain URLs to their new counterparts. After all, I had shared some links to my previous blog posts over Social Media and I wanted to make sure old links work and redirect properly. That's when the <a href="https://github.com/mkdocs/mkdocs-redirects">mkdocs-redirect</a> saved me. You can simply map your old Bearblog post urls to their new url in the following way:</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># properdocs.yml</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nt">plugins</span><span class="p">:</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">redirects</span><span class="p">:</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">       </span><span class="nt">redirect_maps</span><span class="p">:</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">         </span><span class="s">&#39;b-2025-05-24-kt-java-nio2-async-channels-p1.md&#39;</span><span class="w"> </span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&#39;blog/b-2025-05-24-kt-java-nio2-async-channels-p1.md&#39;</span>
+</span></code></pre></div>
+<p>Note:</p>
+<blockquote>
+<p>The trick was in adding the <code>.md</code> at the end of old post url to make redirect work.</p>
+</blockquote>
+<h2 id="working-around-annoying-navbar">Working Around Annoying NavBar<a class="headerlink" href="#working-around-annoying-navbar" title="Anchor link to this section for reference">&para;</a></h2>
+<p>To get fine grained control over what shows up in your Navbar and what should be hidden,  <a href="https://pypi.org/project/mkdocs-awesome-pages-plugin/"><code>mkdocs-awesome-pages-plugin</code></a> saved me. It gives you lots of flexibility how to customize your Navbar, So check it out!</p>
+<h2 id="handling-cname">Handling CNAME<a class="headerlink" href="#handling-cname" title="Anchor link to this section for reference">&para;</a></h2>
+<p>I deploy using a branch from github pages, and one annoying thing with static website generators is to always find a way to copy the CNAME file to your deployment branch (or copy that alongside your statically generated web site artifacts). You can do this with properdocs by following configuration:</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">#properdocs.yml</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nt">extra_templates</span><span class="p">:</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CNAME</span>
+</span></code></pre></div>
+<p>Note:</p>
+<blockquote>
+<p>CNAME needs to live inside the <code>docs</code> directory.</p>
+</blockquote>
+<h2 id="highlighting-code">Highlighting Code<a class="headerlink" href="#highlighting-code" title="Anchor link to this section for reference">&para;</a></h2>
+<p>Yes, I need some color on my code snippets. That's where you need <a href="https://facelessuser.github.io/pymdown-extensions/"><code>pymdownx</code></a> which is pulled in by default by <a href="https://squidfunk.github.io/mkdocs-material/"><code>mkdocs-material</code></a> (Thanks to <code>pub-blog</code> plugin). Here is the configuration that you need for making the highlight to work:</p>
+<p><div class="language-yaml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">#properdocs.yaml</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nt">theme</span><span class="p">:</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">material</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nt">markdown_extensions</span><span class="p">:</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">pymdownx.highlight</span><span class="p">:</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">       </span><span class="nt">auto_title</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">       </span><span class="nt">anchor_linenums</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">       </span><span class="nt">line_spans</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">__span</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">       </span><span class="nt">pygments_lang_class</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">       </span><span class="nt">use_pygments</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pymdownx.snippets</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pymdownx.superfences</span>
+</span></code></pre></div><br />
+Note:</p>
+<blockquote>
+<p>Good news, there are far more goodies to <a href="https://squidfunk.github.io/mkdocs-material/setup/">configure</a>.</p>
+</blockquote>
+<h2 id="workflow">Workflow<a class="headerlink" href="#workflow" title="Anchor link to this section for reference">&para;</a></h2>
+<p>My current workflow now is the following for writing a new blog post:<br />
+<div class="language-markdown highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">1.</span> Pick an idea
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">2.</span> Create an <span class="sb">`.md`</span> file in the <span class="sb">`blog/`</span> directory
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">3.</span> fire up <span class="sb">`properdocs serve`</span> in the background to continuously see live updates in browser as I type in my editor.
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="k">4.</span> Review the post
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">5.</span> use <span class="sb">`properdocs build`</span> to make sure static website builds correctly.
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="k">6.</span> commit changes in main branch if everything looks good.
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="k">7.</span> use <span class="sb">`properdocs gh-deploy`</span> to ship changes.
+</span></code></pre></div></p>
+<h2 id="a-thank-you">A Thank You<a class="headerlink" href="#a-thank-you" title="Anchor link to this section for reference">&para;</a></h2>
+<p>I need to end this post with big thank you to all awesome people who make <code>Mkdocs</code>, maintain <code>Properdocs</code> and create all these amazing plugins! THANK YOU!</p>
 
 
 
@@ -1356,7 +1389,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../b-2026-04-06-itpplnl-p1/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Introduction to Project Panama (Part I): Loading a Native Library">
+          <a href="../tags/properdocs/" class="md-footer__link md-footer__link--prev" aria-label="Previous: properdocs">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1366,20 +1399,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Introduction to Project Panama (Part I): Loading a Native Library
+                properdocs
               </div>
             </div>
           </a>
         
         
           
-          <a href="../b-2025-08-24-social-life-software-bc-rel-p2/" class="md-footer__link md-footer__link--next" aria-label="Next: The Social Life of Software: Bounded Contexts Relationships in Action (Part II)">
+          <a href="../b-2026-04-06-itpplnl-p1/" class="md-footer__link md-footer__link--next" aria-label="Next: Introduction to Project Panama (Part I): Loading a Native Library">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                The Social Life of Software: Bounded Contexts Relationships in Action (Part II)
+                Introduction to Project Panama (Part I): Loading a Native Library
               </div>
             </div>
             <div class="md-footer__button md-icon">

@@ -9,10 +9,6 @@
          <lastmod>2025-05-01</lastmod>
     </url>
     <url>
-         <loc>https://pub.reza.rs/impressum/</loc>
-         <lastmod>2026-07-11</lastmod>
-    </url>
-    <url>
          <loc>https://pub.reza.rs/blog/b-2025-05-24-kt-java-nio2-async-channels-p1/</loc>
          <lastmod>2025-05-24</lastmod>
     </url>
@@ -35,6 +31,10 @@
     <url>
          <loc>https://pub.reza.rs/blog/b-2026-04-06-itpplnl-p1/</loc>
          <lastmod>2026-04-06</lastmod>
+    </url>
+    <url>
+         <loc>https://pub.reza.rs/blog/b-2026-07-11-properdocs.md/</loc>
+         <lastmod>2026-07-11</lastmod>
     </url>
     <url>
          <loc>https://pub.reza.rs/blog/</loc>
@@ -77,6 +77,10 @@
          <lastmod>2026-07-11</lastmod>
     </url>
     <url>
+         <loc>https://pub.reza.rs/blog/tags/blog/</loc>
+         <lastmod>2026-07-11</lastmod>
+    </url>
+    <url>
          <loc>https://pub.reza.rs/blog/tags/ddd/</loc>
          <lastmod>2026-07-11</lastmod>
     </url>
@@ -102,6 +106,10 @@
     </url>
     <url>
          <loc>https://pub.reza.rs/blog/tags/panama/</loc>
+         <lastmod>2026-07-11</lastmod>
+    </url>
+    <url>
+         <loc>https://pub.reza.rs/blog/tags/properdocs/</loc>
          <lastmod>2026-07-11</lastmod>
     </url>
 </urlset>

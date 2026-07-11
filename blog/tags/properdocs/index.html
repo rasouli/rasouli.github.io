@@ -12,31 +12,31 @@
         <meta name="author" content="Reza Rasouli">
       
       
-        <link rel="canonical" href="https://pub.reza.rs/blog/b-2025-08-30-erap-p1/">
+        <link rel="canonical" href="https://pub.reza.rs/blog/tags/properdocs/">
       
       
-        <link rel="prev" href="../b-2026-04-06-itpplnl-p1/">
+        <link rel="prev" href="../panama/">
       
       
-        <link rel="next" href="../b-2025-08-24-social-life-software-bc-rel-p2/">
+        <link rel="next" href="../../b-2026-07-11-properdocs.md/">
       
       
         
       
       
-      <link rel="icon" href="../assets/logo-r.webp">
+      <link rel="icon" href="../../assets/logo-r.webp">
       <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.6">
     
     
       
-        <title>Engine Rooms of Asynchronous Processing (part 1): Reactor Pattern Conceptual Overview - Random Walks & Racing Thoughts</title>
+        <title>Tag - properdocs - Random Walks & Racing Thoughts</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -55,11 +55,11 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/blog.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/blog.min.css">
     
-      <link rel="stylesheet" href="../../assets/stylesheets/blog.min.css.map">
+      <link rel="stylesheet" href="../../../assets/stylesheets/blog.min.css.map">
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -84,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#reactor" class="md-skip">
+        <a href="#migrating-from-bearblog-to-properdocs" class="md-skip">
           Skip to content
         </a>
       
@@ -98,9 +98,9 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Random Walks &amp; Racing Thoughts" class="md-header__button md-logo" aria-label="Random Walks & Racing Thoughts" data-md-component="logo">
+    <a href="../../.." title="Random Walks &amp; Racing Thoughts" class="md-header__button md-logo" aria-label="Random Walks & Racing Thoughts" data-md-component="logo">
       
-  <img src="../assets/logo-r.webp" alt="logo">
+  <img src="../../assets/logo-r.webp" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -117,7 +117,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Engine Rooms of Asynchronous Processing (part 1): Reactor Pattern Conceptual Overview
+              Tag - properdocs
             
           </span>
         </div>
@@ -223,7 +223,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../about/" class="md-tabs__link">
+      <a href="../../../about/" class="md-tabs__link">
         
   
   
@@ -240,11 +240,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
           
   
   
@@ -264,7 +266,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../.." class="md-tabs__link">
+      <a href="../../.." class="md-tabs__link">
         
   
   
@@ -299,9 +301,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Random Walks &amp; Racing Thoughts" class="md-nav__button md-logo" aria-label="Random Walks & Racing Thoughts" data-md-component="logo">
+    <a href="../../.." title="Random Walks &amp; Racing Thoughts" class="md-nav__button md-logo" aria-label="Random Walks & Racing Thoughts" data-md-component="logo">
       
-  <img src="../assets/logo-r.webp" alt="logo">
+  <img src="../../assets/logo-r.webp" alt="logo">
 
     </a>
     Random Walks & Racing Thoughts
@@ -316,7 +318,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../about/" class="md-nav__link">
+      <a href="../../../about/" class="md-nav__link">
         
   
   
@@ -340,6 +342,8 @@
       
   
   
+    
+  
   
   
     
@@ -359,20 +363,23 @@
     
     
       
+        
+        
+      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
+            <a href="../../" class="md-nav__link ">
               
   
   
@@ -390,13 +397,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -428,17 +435,20 @@
       
       
         
+          
+          
+        
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="">
             
   
   
@@ -474,7 +484,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../archive/2026/" class="md-nav__link">
+      <a href="../../archive/2026/" class="md-nav__link">
         
   
   
@@ -502,7 +512,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../archive/2025/" class="md-nav__link">
+      <a href="../../archive/2025/" class="md-nav__link">
         
   
   
@@ -554,17 +564,20 @@
       
       
         
+          
+          
+        
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
         
           
-          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="">
             
   
   
@@ -600,7 +613,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../categories/Java/" class="md-nav__link">
+      <a href="../../categories/Java/" class="md-nav__link">
         
   
   
@@ -628,7 +641,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../categories/Kotlin/" class="md-nav__link">
+      <a href="../../categories/Kotlin/" class="md-nav__link">
         
   
   
@@ -656,7 +669,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../categories/NIO/" class="md-nav__link">
+      <a href="../../categories/NIO/" class="md-nav__link">
         
   
   
@@ -684,7 +697,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../categories/ddd/" class="md-nav__link">
+      <a href="../../categories/ddd/" class="md-nav__link">
         
   
   
@@ -717,8 +730,10 @@
                 
   
   
+    
   
   
+  
     
     
       
@@ -749,18 +764,21 @@
     
       
       
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="">
             
   
   
@@ -778,7 +796,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -796,7 +814,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tags/FFM/" class="md-nav__link">
+      <a href="../FFM/" class="md-nav__link">
         
   
   
@@ -824,7 +842,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tags/asyn/" class="md-nav__link">
+      <a href="../asyn/" class="md-nav__link">
         
   
   
@@ -852,7 +870,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tags/blog/" class="md-nav__link">
+      <a href="../blog/" class="md-nav__link">
         
   
   
@@ -880,7 +898,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tags/ddd/" class="md-nav__link">
+      <a href="../ddd/" class="md-nav__link">
         
   
   
@@ -908,7 +926,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tags/foreign/" class="md-nav__link">
+      <a href="../foreign/" class="md-nav__link">
         
   
   
@@ -936,7 +954,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tags/java/" class="md-nav__link">
+      <a href="../java/" class="md-nav__link">
         
   
   
@@ -964,7 +982,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tags/kotlin/" class="md-nav__link">
+      <a href="../kotlin/" class="md-nav__link">
         
   
   
@@ -992,7 +1010,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tags/native/" class="md-nav__link">
+      <a href="../native/" class="md-nav__link">
         
   
   
@@ -1020,7 +1038,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tags/nio/" class="md-nav__link">
+      <a href="../nio/" class="md-nav__link">
         
   
   
@@ -1048,7 +1066,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tags/panama/" class="md-nav__link">
+      <a href="../panama/" class="md-nav__link">
         
   
   
@@ -1073,10 +1091,35 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../tags/properdocs/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    properdocs
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1092,6 +1135,35 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#migrating-from-bearblog-to-properdocs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migrating From Bearblog to Properdocs
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1119,7 +1191,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   
@@ -1164,99 +1236,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#reactor" class="md-nav__link">
+  <a href="#migrating-from-bearblog-to-properdocs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Reactor
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Reactor">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#components-of-a-reactor" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Components of a Reactor
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Components of a Reactor">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#resources-sources-that-produce-io-events" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Resources: Sources that produce I/O events
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#event-demultiplexer-resources-whistle-blower" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Event Demultiplexer: Resources whistle blower
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#event-handlers-specific-io-event-caretaker" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Event Handlers: Specific I/O event Caretaker
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#reactor-the-glue" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Reactor: The glue
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#flows-inside-reactor" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Flows inside Reactor
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Next
+        Migrating From Bearblog to Properdocs
       
     </span>
   </a>
@@ -1280,42 +1263,59 @@
 
 
 
-  <h1>Engine Rooms of Asynchronous Processing (part 1): Reactor Pattern Conceptual Overview</h1>
+  <h1>properdocs</h1>
 
-<p>"Engine Rooms of Asynchronous Processing" are series of articles exploring patterns used to facilitate concurrent asynchronous programming. The series aims to (eventually) provide a clear understanding of well-established patterns in this space and explore implementing them from scratch.</p>
-<p>The first group of these articles will explore the Reactor pattern.</p>
-<!-- more -->
-<h2 id="reactor">Reactor<a class="headerlink" href="#reactor" title="Anchor link to this section for reference">&para;</a></h2>
-<p><img alt="erap_reactor_pattern" src="https://bear-images.sfo2.cdn.digitaloceanspaces.com/reza/erap_reactor_pattern.webp" /></p>
-<p><em>Image is AI generated</em></p>
-<h3 id="components-of-a-reactor">Components of a Reactor<a class="headerlink" href="#components-of-a-reactor" title="Anchor link to this section for reference">&para;</a></h3>
-<h4 id="resources-sources-that-produce-io-events">Resources: Sources that produce I/O events<a class="headerlink" href="#resources-sources-that-produce-io-events" title="Anchor link to this section for reference">&para;</a></h4>
-<p>Also known as <code>Handles</code>, these are sources that need to be monitored. They are simply places where you expect I/O operations to occur.</p>
-<h4 id="event-demultiplexer-resources-whistle-blower">Event Demultiplexer: Resources whistle blower<a class="headerlink" href="#event-demultiplexer-resources-whistle-blower" title="Anchor link to this section for reference">&para;</a></h4>
-<p>Watch over a set of <code>Resource</code>s in synchronous fashion. Synchronous as it blocks the thread it is running in, not resuming until there are some I/O events ready from <code>Resource</code>s.</p>
-<h4 id="event-handlers-specific-io-event-caretaker">Event Handlers:  Specific  I/O event Caretaker<a class="headerlink" href="#event-handlers-specific-io-event-caretaker" title="Anchor link to this section for reference">&para;</a></h4>
-<p>These are code that should be executed when a specific type of I/O event happens on a specific resource.</p>
-<h4 id="reactor-the-glue">Reactor: The glue<a class="headerlink" href="#reactor-the-glue" title="Anchor link to this section for reference">&para;</a></h4>
-<p>Reactor brings everyone together: Resources and Event Handlers. It connects the dots, by Event Demultiplexer: in a for-ever loop, wait for some I/O events to happen on all Resources, execute related event handlers for each one.</p>
-<h3 id="flows-inside-reactor">Flows inside Reactor<a class="headerlink" href="#flows-inside-reactor" title="Anchor link to this section for reference">&para;</a></h3>
-<p>Following interactions happen within a cyclical Reactor flow:</p>
-<ol>
-<li><strong>Registration</strong>:<br />
-   * <em>Client expresses their interest in Events</em>: For a specific Resource, What Handlers should be executed for what specific  I/O event type?  </li>
-<li><strong>Event Loop</strong>:<br />
-   * <em>The reactor hits the ground running</em>: Having a map of Resource events to Event Handlers, A for-ever loop starts within the reactor.  </li>
-<li><strong>Waiting for Events</strong>:<br />
-   * <em>Monitor I/O events in Resources while being nice to CPU</em>: Using the Event Demultiplexer, Reactor waits until some events are available. This step is where Reactor pattern tries its best to not waste any CPU cycle waiting for I/O events to become available. Note that the blocking call to Demultiplexer is made at this point, and the reactor is waiting for I/O events to become available.  </li>
-<li><strong>Dispatching</strong>:<br />
-   * <em>Resources have some events</em>: Event Demultiplexer returns from the previous round of monitoring events, handing over a list of Resources (aka Handles) that have some events ready to be processed.  </li>
-<li><strong>Executing Handlers</strong>:<br />
-   * <em>Reactor runs interested Handler(s)</em>: At this point, the Reactor is ready to pass on the Resource that has some event to the handler that was previously registered in the Registration step. This is also recognized as executing the callback. </li>
-</ol>
-<p>After handlers finish executing (in essence handling the event), Reactor then returns the control to step 2.</p>
-<p>Following sequence diagram summarizes the reactor pattern:<br />
-<img alt="reactor-sequnece-diagram _ Mermaid Chart-2025-08-30-131056" src="https://bear-images.sfo2.cdn.digitaloceanspaces.com/reza/reactor-sequnece-diagram-_-mermaid-chart-2025-08-30-131056.webp" /></p>
-<h2 id="next">Next<a class="headerlink" href="#next" title="Anchor link to this section for reference">&para;</a></h2>
-<p>For the next part, we will look at how we can implement this pattern using JDK, stay tuned ;).</p>
+<!--
+  ~ MIT License
+  ~
+  ~ Copyright (c) 2023-2025 Maciej 'maQ' Kusz <maciej.kusz@gmail.com>
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  -->
+
+<h2 id="migrating-from-bearblog-to-properdocs"><a href="https://pub.reza.rs/blog/b-2026-07-11-properdocs.md/">Migrating From Bearblog to Properdocs</a><a class="headerlink" href="#migrating-from-bearblog-to-properdocs" title="Anchor link to this section for reference">&para;</a></h2>
+<!--suppress LongLine -->
+<div class="post-extra">
+    <div class="col">
+        <p class="post-date">2026-07-11 17:00:00</p>
+    </div>
+    <div class="col">
+
+        <a href="https://pub.reza.rs/blog/tags/blog/">#blog</a>
+
+        <a href="https://pub.reza.rs/blog/tags/properdocs/">#properdocs</a>
+
+    </div>
+</div>
+
+<p><img alt="None" src="../../assets/bye-bear.jpg" /></p>
+<blockquote>
+<p>Photo by <a href="https://unsplash.com/@hansjurgen007?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Hans-Jurgen Mager</a> on <a href="https://unsplash.com/photos/polar-bear-on-snow-covered-ground-during-daytime-qQWV91TTBrE?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></p>
+</blockquote>
+<p>Some time ago I decided to migrate my blog off of <a href="">Bearblog</a> mainly because I had to pay a subscription fee for attaching my own domain, which I did not like very much. Don't get me wrong, Bearblog provides a great service, but I thought "it is the time" this weekend. In this post I explain how <code>properdocs</code> can help you with that to host your personal blog on top of github pages.</p>
+<div class="post-link">
+
+    <a href="https://pub.reza.rs/blog/b-2026-07-11-properdocs.md/" title="Migrating From Bearblog to Properdocs">
+        Read more
+    </a>
+
+</div>
 
 
 
@@ -1356,7 +1356,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../b-2026-04-06-itpplnl-p1/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Introduction to Project Panama (Part I): Loading a Native Library">
+          <a href="../panama/" class="md-footer__link md-footer__link--prev" aria-label="Previous: panama">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1366,20 +1366,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Introduction to Project Panama (Part I): Loading a Native Library
+                panama
               </div>
             </div>
           </a>
         
         
           
-          <a href="../b-2025-08-24-social-life-software-bc-rel-p2/" class="md-footer__link md-footer__link--next" aria-label="Next: The Social Life of Software: Bounded Contexts Relationships in Action (Part II)">
+          <a href="../../b-2026-07-11-properdocs.md/" class="md-footer__link md-footer__link--next" aria-label="Next: Migrating From Bearblog to Properdocs">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                The Social Life of Software: Bounded Contexts Relationships in Action (Part II)
+                Migrating From Bearblog to Properdocs
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -1423,10 +1423,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.footer", "navigation.tracking", "navigation.top", "navigation.sections", "navigation.indexes", "navigation.instant", "navigation.instant.progress", "search.suggest", "search.highlight", "search.share", "content.action.edit", "content.action.view", "content.code.copy", "content.code.annotate", "content.tabs.link", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.footer", "navigation.tracking", "navigation.top", "navigation.sections", "navigation.indexes", "navigation.instant", "navigation.instant.progress", "search.suggest", "search.highlight", "search.share", "content.action.edit", "content.action.view", "content.code.copy", "content.code.annotate", "content.tabs.link", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
