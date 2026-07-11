@@ -11,7 +11,7 @@ I’m Reza Rasouli. I’ve been a software engineer for about a some years now, 
 
 - [Linked-In](https://www.linkedin.com/in/rezarasouli/) 
 - [Github](https://github.com/rasouli)
-- [Email](emailto:hello@reza.rs)
+- Email: hello at reza.rs
 
 
 <details>
