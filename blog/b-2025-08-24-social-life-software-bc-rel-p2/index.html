@@ -1,0 +1,651 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Programming, Technology and Machines">
+      
+      
+        <meta name="author" content="Reza Rasouli">
+      
+      
+        <link rel="canonical" href="https://pub.reza.rs/blog/b-2025-08-24-social-life-software-bc-rel-p2/">
+      
+      
+        <link rel="prev" href="../b-2025-08-30-erap-p1/">
+      
+      
+        <link rel="next" href="../b-2025-08-16-social-life-software-bc-rel-p1/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/logo-r.webp">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>The Social Life of Software: Bounded Contexts Relationships in Action (Part II) - Random Walks & Racing Thoughts</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CLato:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Lato"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/blog.min.css">
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/blog.min.css.map">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="green">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#customer-supplier-politics" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Random Walks &amp; Racing Thoughts" class="md-header__button md-logo" aria-label="Random Walks & Racing Thoughts" data-md-component="logo">
+      
+  <img src="../assets/logo-r.webp" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Random Walks & Racing Thoughts
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              The Social Life of Software: Bounded Contexts Relationships in Action (Part II)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="green"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="green" data-md-color-accent="green"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../index.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Blog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../about/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Random Walks &amp; Racing Thoughts" class="md-nav__button md-logo" aria-label="Random Walks & Racing Thoughts" data-md-component="logo">
+      
+  <img src="../assets/logo-r.webp" alt="logo">
+
+    </a>
+    Random Walks & Racing Thoughts
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#customer-supplier-politics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Customer Supplier: Politics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Customer Supplier: Politics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#conformist-we-surrender-but-relax-on-shoulders-of-giants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conformist: We surrender but relax on shoulders of giants
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#anticorruption-layer-gatekeeping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Anticorruption Layer: Gatekeeping
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#open-host-service-gentlemens-agreement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Open-host Service: Gentlemen’s Agreement
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#separate-ways-too-costly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Separate ways: Too costly
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#context-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Context Map
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+  <h1>The Social Life of Software: Bounded Contexts Relationships in Action (Part II)</h1>
+
+<p>This is a follow-up post from <a href="../b-2025-08-16-social-life-software-bc-rel-p1/">Part I</a> where we looked into Cooperation relationship type between Bounded Contexts. This post will look into following topics:<br />
+* Customer-Supplier <br />
+* Separate Ways<br />
+* Context Map</p>
+<!-- more -->
+
+<h2 id="customer-supplier-politics">Customer Supplier: Politics<a class="headerlink" href="#customer-supplier-politics" title="Anchor link to this section for reference">&para;</a></h2>
+<p>A “Supplier” or “Upstream” bounded context is providing a service, and another “Customer” or “Downstream” bounded context is using that service. Usually this supplier is an API governed by a different or neighbouring team rather than one that your team owns and the power dynamic is uneven. You can make choices: Conformist, Anticorruption Layer orOpen-Host Service.</p>
+<h3 id="conformist-we-surrender-but-relax-on-shoulders-of-giants">Conformist: We surrender but relax on shoulders of giants<a class="headerlink" href="#conformist-we-surrender-but-relax-on-shoulders-of-giants" title="Anchor link to this section for reference">&para;</a></h3>
+<p>The upstream team does not really care about you, they do their own thing at their own speed. Usually this happens when you trust the upstream entity when you know they work for the greater good, which includes your interests. In this scenario, you recognize it’s worthwhile to give up a relatively significant part of your control in how things should run to that particular upstream team.</p>
+<p>At some point in our career, we all had good and some unconventional ideas on how to get realtime insight into how the code we shipped to production performs. But hopefully today we have things like OpenTelemetry and standard suites of libraries for that goal. Nowadays, we prefer things like having Traces, Spans etc to monitor how call chains across neighbouring services including our application happen. This is one very clear example where we trust the standards, conform so to speak, and adopt well maintained tools and delegate the “How”.</p>
+<p>Although in previous OpenTelemetry example some libraries fail to work after some time to send out Traces and Spans, we act on it in nonviolent manner, with upgrading or fixing dependencies for a greater cause: to go back to business and make some money.</p>
+<p><img alt="conformist" src="../assets/conformist.webp" /></p>
+<h3 id="anticorruption-layer-gatekeeping">Anticorruption Layer: Gatekeeping<a class="headerlink" href="#anticorruption-layer-gatekeeping" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Federal states may form one country and adhere to the same constitution, but in the end, every state is its own kettle of fish. For example laws can differ from one state to the other when it comes to environment or property ownership disputes.</p>
+<p>You can’t rely on the upstream team’s bounded context (coming from their own fully autonomous world) because they do things in a way that can’t work for you as-is. But you also can't ignore them, because they solve a critical problem. Your choice: Diplomacy.</p>
+<p>From time-to-time, an upstream team is providing an OpenAPI contract of their REST API that every time you interact with it, you just laugh to yourself (the reasons are not important for us :D). During testing you realize the data do not change very often, say 12 hours, but the response time is absolutely proportional to the speed at which your elbow hairs grow. Therefore you decide to build a cache to mitigate that, and use that cache for quick lookup. You might even go one step further, you totally change the data model, so instead of making 2 calls to build a certain data model, you now make one call thanks to how you arranged the data in your cache.</p>
+<p><img alt="acl" src="../assets/acl.webp" /></p>
+<p>Anti-corruption, the cache mechanism in our example, is the medium we  want to have to preserve our own environment by not exposing / leaking everything from the upstream bounded context to our beloved downstream bounded context: You want to preserve the language you speak within the boundaries of your downstream bounded context, The ubiquitous language if you recall, from external upstream’s idioms or terms (jokingly, a real life resemblance are German-only-speaking companies and English Speaking Expats :D).</p>
+<h3 id="open-host-service-gentlemens-agreement">Open-host Service: Gentlemen’s Agreement<a class="headerlink" href="#open-host-service-gentlemens-agreement" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Finally, this last one is about upstream working with downstream consumers in mind. Upstream Bounded Context tells you about its contracts, but to avoid locking you in, it also publishes different versions of the same contract. It is up to you, the consumer, which version of the contract you want to be in relationship with upstream.</p>
+<p>The way each contract is communicated apparently has a fitting name: Published Language. The medium by which the contracts are implemented or exposed by upstream Bounded Context is called “Open-Host Service”.  What happens in practice is that via Open Host Service medium the upstream Bounded Context decouples its own internal abstractions from those abstractions of “Published Language”. This helps the upstream to have full autonomy on how they want to run things on their end while they are not giving consumers hard times by unexpectedly breaking them, say by accidental service regression. Note that this is only possible by fully respecting the abstractions and assumptions in Published Language.</p>
+<p>Consider a distributed object storage, which provides an API for reading and writing files in their entirety. Later on they add streaming capabilities, so you can get notified about gradual changes of a certain file. Instead of overnight changing their API, they publish a second version of their API that adds subscription functionality, while supporting previous file level API for clients who are used to the previous API. Also they do not necessarily expose their clients to learn about how they operate, where they store each file binary blob or how they distribute that file across their data centers (irrelevant to consumer’s concern) giving them full autonomy on how they want to change their infrastructure without breaking clients.</p>
+<p><img alt="ohs" src="../assets/ohs.webp" /></p>
+<h2 id="separate-ways-too-costly">Separate ways: Too costly<a class="headerlink" href="#separate-ways-too-costly" title="Anchor link to this section for reference">&para;</a></h2>
+<p>Sometimes you really cannot bear the cost. You had a good time starting “easy” with a specific cloud provider’s FaaS, but you then saw that runtime costs are eating up all your business profit margins, so you decide to go your separate ways, like DHH and AWS.</p>
+<p>Separate ways pattern applies when you cannot make the case for an integration between two services provided by a certain bounded context aka “Not pragmatic”. Mainly because your rationale proves to you that it is: “Complicated and Costly”, “Polluting and Expensive”, “Vendor Lock-in” or even “Hard to Coordinate”.</p>
+<p>So you decide to duplicate (or copy part of) that functionality of a specific upstream Bounded Context. For e.g. you built everything on top of a sexy FaaS and later on you got fed up with debugging cold-start problems of certain functions  by guesstimating certain optimal configuration values at 3:00 AM (as you gave up on their documentation (and support)). So then, you roll out your own Kubernetes cluster and deploy like never before, effectively deciding to build your own serverless infrastructure.</p>
+<h2 id="context-map">Context Map<a class="headerlink" href="#context-map" title="Anchor link to this section for reference">&para;</a></h2>
+<p>When you put all Bounded Contexts and the relationships between them on a  whiteboard or something similar, you get the Context Map. That is as simple as it gets. When you zoom out, sit back and blow into your hot coffee mug, you get a visual representation of how Conway’s Law applies to your organization.</p>
+<p>The image below displays a context map for a Billing service. This service is responsible for creating billing documents for user orders. These documents include the most recent account balance and are ultimately stored in object storage by the Document Archive service.</p>
+<p><img alt="context-map" src="../assets/context-map.webp" /></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../b-2025-08-30-erap-p1/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Engine Rooms of Asynchronous Processing (part 1): Reactor Pattern Conceptual Overview">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Engine Rooms of Asynchronous Processing (part 1): Reactor Pattern Conceptual Overview
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../b-2025-08-16-social-life-software-bc-rel-p1/" class="md-footer__link md-footer__link--next" aria-label="Next: The Social Life of Software: Bounded Contexts Relationships in Action (Part I)">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                The Social Life of Software: Bounded Contexts Relationships in Action (Part I)
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      &copy; 2025-2026 Reza Rasouli
+
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.footer", "navigation.tracking", "navigation.top", "navigation.sections", "navigation.indexes", "navigation.instant", "navigation.instant.progress", "search.suggest", "search.highlight", "search.share", "content.action.edit", "content.action.view", "content.code.copy", "content.code.annotate", "content.tabs.link", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

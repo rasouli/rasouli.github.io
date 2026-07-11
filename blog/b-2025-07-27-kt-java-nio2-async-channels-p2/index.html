@@ -1,0 +1,1001 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Programming, Technology and Machines">
+      
+      
+        <meta name="author" content="Reza Rasouli">
+      
+      
+        <link rel="canonical" href="https://pub.reza.rs/blog/b-2025-07-27-kt-java-nio2-async-channels-p2/">
+      
+      
+        <link rel="prev" href="../b-2025-08-16-social-life-software-bc-rel-p1/">
+      
+      
+        <link rel="next" href="../b-2025-05-24-kt-java-nio2-async-channels-p1/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/logo-r.webp">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Kotlin Coroutines and Java NIO 2 Asynchronous Channels (Part II) - Random Walks & Racing Thoughts</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CLato:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Lato"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/blog.min.css">
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/blog.min.css.map">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="green">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#recap" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Random Walks &amp; Racing Thoughts" class="md-header__button md-logo" aria-label="Random Walks & Racing Thoughts" data-md-component="logo">
+      
+  <img src="../assets/logo-r.webp" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Random Walks & Racing Thoughts
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Kotlin Coroutines and Java NIO 2 Asynchronous Channels (Part II)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="green"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="green" data-md-color-accent="green"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../index.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Blog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../about/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Random Walks &amp; Racing Thoughts" class="md-nav__button md-logo" aria-label="Random Walks & Racing Thoughts" data-md-component="logo">
+      
+  <img src="../assets/logo-r.webp" alt="logo">
+
+    </a>
+    Random Walks & Racing Thoughts
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#recap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recap
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#somewhat-quick-re-write" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Somewhat quick re-write
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Somewhat quick re-write">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#first-using-dedicated-dispatcher-to-scope-io-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        First, Using dedicated Dispatcher to scope I/O operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#secondly-using-same-dispatcher-for-all-interaction-with-asynchronoussocketchannel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Secondly, Using same dispatcher for all interaction with AsynchronousSocketChannel
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#accepting-connection-asynchronously-as-if-it-was-a-suspendable-method-call" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Accepting connection asynchronously as if it was a suspendable method call
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#suspendcancellablecoroutine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        suspendCancellableCoroutine
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="suspendCancellableCoroutine">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wrapping-the-accept-completionhandler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wrapping the Accept CompletionHandler
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#beyond-callback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Beyond Callback
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Beyond Callback">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#readasync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        readAsync
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#writeasync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        writeAsync
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#full-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full Code
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#final-words" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Final words
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+  <h1>Kotlin Coroutines and Java NIO 2 Asynchronous Channels (Part II)</h1>
+
+<p>We showed that using Kotlin Coroutines and its ecosystem, we can write much more maintainable code when taking advantage of Java NIO 2 Asynchronous Channels. This blog post is the follow-up and last part of <a href="../b-2025-05-24-kt-java-nio2-async-channels-p1/">previous</a> blog post where we managed to write a very simple Asynchronous and Non-blocking Java NIO server using <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/channels/AsynchronousServerSocketChannel.html">AsynchronousServerSocketChannel</a>. Now in this part we will leverage Kotlin coroutines and rewrite the whole thing. The end result will be interesting in that we end up with a more maintainable code!</p>
+<!-- more -->
+
+<h2 id="recap">Recap<a class="headerlink" href="#recap" title="Anchor link to this section for reference">&para;</a></h2>
+<p>Previously we ended up with <a href="https://github.com/rasouli/blog-codes/blob/88c88997407a3754a84a99db76a333f31318dd2b/jvm/kotlin-java-nio/kotlin-java-nio/src/main/kotlin/rs/reza/pub/nioserver/BasicAsyncServer.kt">following</a> code, where we wrote all sort of callbacks inside our <code>CompletionHandlers</code>.</p>
+<p>We can immediately see the obvious: <br />
+    1. Writing callback based code makes understanding the code hard.<br />
+    2. Managing the state across callback is harder :D</p>
+<h2 id="somewhat-quick-re-write">Somewhat quick re-write<a class="headerlink" href="#somewhat-quick-re-write" title="Anchor link to this section for reference">&para;</a></h2>
+<p>Let's quickly re-write the previous server example to build the base for using Kotlin coroutines:</p>
+<pre><code class="language-kotlin">//...
+    private val asyncChannelGroupThreadPool = Executors.newFixedThreadPool(2)
+    private val asyncChannelGroupDispatcher = asyncChannelGroupThreadPool.asCoroutineDispatcher()
+
+    @JvmStatic
+    fun main(args: Array&lt;String&gt;) {
+        runBlocking {
+            run()
+        }
+    }
+
+    suspend fun run() = coroutineScope {
+        val address = InetSocketAddress(HOST, PORT)
+        // we can ignore the cost of setting up the asynchronous channel group.
+        val asynchronousChannelGroup = AsynchronousChannelGroup.withThreadPool(asyncChannelGroupThreadPool)
+        val asyncServerSocketChannel = listen(address = address, group = asynchronousChannelGroup)
+
+        asyncServerSocketChannel.use { serverSocketChannel -&gt;
+            while (serverSocketChannel.isOpen) {
+                try {
+                    // 1. we would use dedicated dispatcher for I/O operations such as accept, read and write. 
+                    val clientChannel = withContext(asyncChannelGroupDispatcher) {
+                        // ... in next section we will look into how we implement this.
+                        serverSocketChannel.acceptAsync()
+                    }
+                    logger.info(&quot;accepted a new connection from client at ${clientChannel.remoteAddress}&quot;)
+                    launch {
+                        val coroutineName = CoroutineName(&quot;client_${clientChannel.remoteAddress}&quot;)
+                        // 2. we need to rationalize on this choice of dispatcher.
+                        withContext(asyncChannelGroupDispatcher + coroutineName) {
+                            processClientChannel(clientChannel)
+                        }
+                    }
+                } catch (ex: Exception) {
+                    logger.error(&quot;exception while accepting new connections&quot;, ex)
+                }
+            }
+        }
+    }
+ //...
+
+</code></pre>
+<p>This is good amount of code to digest for the beginning. There are a couple of interesting choices we need/wanted to make:</p>
+<h3 id="first-using-dedicated-dispatcher-to-scope-io-operations">First, Using dedicated Dispatcher to scope I/O operations<a class="headerlink" href="#first-using-dedicated-dispatcher-to-scope-io-operations" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Thanks to:</p>
+<pre><code class="language-kotlin">    private val asyncChannelGroupDispatcher = asyncChannelGroupThreadPool.asCoroutineDispatcher()
+</code></pre>
+<p>We can explicitly re-use the underlying Thread Pool to spawn coroutines that deal with Non-blocking and async I/O operations. I really like this feature mainly because it makes it super clear in combination with <code>withContext</code> to specify on which Thread Pool Kotlin coroutines handling I/O operations should be managed.</p>
+<p>As you can see we are using some sort of magic to seemingly use a suspendable coroutine to accept incoming connections, we explicitly define where coroutine (which we will explore how it works next) should perform that action:</p>
+<pre><code class="language-kotlin">val clientChannel = withContext(asyncChannelGroupDispatcher) {
+    serverSocketChannel.acceptAsync()
+}
+</code></pre>
+<h3 id="secondly-using-same-dispatcher-for-all-interaction-with-asynchronoussocketchannel">Secondly, Using same dispatcher for all interaction with <code>AsynchronousSocketChannel</code><a class="headerlink" href="#secondly-using-same-dispatcher-for-all-interaction-with-asynchronoussocketchannel" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Following up previous point, then we make this (kind of a discipline) that if anywhere that we are beginning to deal with read / write on the AsynchronousSocketChannel, we would use the same <code>asyncChannelGroupDispatcher</code> dispatcher.</p>
+<p>Honestly this might be trivial, but I wanted to think a little about this: if after accepting a connection, I want to launch some sort of coroutine that supervises reading and writing (basically managing the client connection) what dispatcher should I use here? <code>Dispatcher.Default</code>, <code>Dispatcher.IO</code> or same beloved <code>asyncChannelGroupDispatcher</code>. If I confused you, you are right. I wanted to think what dispatcher to replace the question marks with:</p>
+<pre><code class="language-kotlin">// ...
+    val coroutineName = CoroutineName(&quot;client_${clientChannel.remoteAddress}&quot;)
+    withContext( ??? + coroutineName) {
+        processClientChannel(clientChannel)
+    }
+//  ...
+</code></pre>
+<p>This <code>processClientChannel</code> is going to supervise the <code>AsynchronousSocketChannel</code> that has just been created by our client. So then the question becomes on which coroutine dispatcher we should schedule this coroutine for execution?<br />
+here follows the rationale why or why not to choose a certain type of dispatcher:</p>
+<ul>
+<li>
+<p><code>Dispatchers.IO</code>: This dispatcher is for genuinely blocking I/O. Our <code>AsynchronousSocketChannel</code> plays a non-blocking game, so using <code>Dispatchers.IO</code> here would just snag a thread for no good reason. It's a conceptual mismatch.</p>
+</li>
+<li>
+<p><code>Dispatchers.Default</code>: This one's for heavy CPU lifting, not for orchestrating I/O. Our client channel's setup isn't CPU-bound, so launching it here would misuse resources or at very least is again a conceputal mismatch.</p>
+</li>
+<li>
+<p>(the dedicated) <code>asyncChannelGroupDispatcher</code>: This custom dispatcher is explicitly tied to our <code>AsynchronousChannelGroup</code>'s thread pool. It ensures the client handler's vital, non-blocking I/O flow kicks off and continues on threads purpose-built for it, providing seamless integration and efficiency right from the get-go.</p>
+</li>
+</ul>
+<p>Based on the above thoughts, I think it is a safe bet to use <code>asyncChannelGroupDispatcher</code> here.</p>
+<h2 id="accepting-connection-asynchronously-as-if-it-was-a-suspendable-method-call">Accepting connection asynchronously as if it was a suspendable  method call<a class="headerlink" href="#accepting-connection-asynchronously-as-if-it-was-a-suspendable-method-call" title="Anchor link to this section for reference">&para;</a></h2>
+<p>So, I kept you waiting for the real deal until this very moment: How can we make that ugly callback code (in part I) to look like a normal suspendable call in Kotlin? the answer simply is: <code>suspendCancellableCoroutine</code></p>
+<h2 id="suspendcancellablecoroutine"><code>suspendCancellableCoroutine</code><a class="headerlink" href="#suspendcancellablecoroutine" title="Anchor link to this section for reference">&para;</a></h2>
+<p>A <code>suspendCancellableCoroutine</code> allows us to wrap a callback based API and isolate it within a suspendable call, so from a high level code it looks as if we are just simply introducing a suspension point to our coroutine. </p>
+<p>Let's look at the general idea of <code>suspendCancellableCoroutine</code> in an example scenario: Imagine someone throws some ugly callback-based client library (like this one) at you:</p>
+<pre><code class="language-kotlin">object SomeAPI {
+    fun getFoo(
+        onSuccess: (Foo) -&gt; Unit,
+        onFailure: (Exception) -&gt; Unit
+    ) {
+        // ....
+    }
+
+    fun cleanUpResources() = println(&quot;some clean up happenning here...&quot;)
+}
+</code></pre>
+<p>The <code>getFoo</code> the method, asks for two callback functions:<br />
+ * <code>onSuccess</code> : to be called when the <code>Foo</code> is actually fetched.<br />
+ * <code>onFailure</code> : to be called when fetching <code>Foo</code> fails with an exception, kindly passing on the exception to the callback for failure scenario.</p>
+<p>All these and they are kind enough to provide <code>cleanUpResources</code> method to be called at some point where you just want to clean up all resources (e.g. thread pools, connection pools, etc) used by the client library.</p>
+<p>what you can do with <code>suspendCancellableCoroutine</code> is to isolate this ugly callback API code to use it with your other (handsome) Kotlin coroutines, like this:</p>
+<pre><code class="language-kotlin">  object MyCode {
+        suspend fun getFoo(): Foo = suspendCancellableCoroutine { continuation -&gt;
+            SomeAPI.getFoo(
+                onSuccess = { foo -&gt; continuation.resume(foo) },
+                onFailure = { continuation.resumeWithException(it) }
+            )
+
+            continuation.invokeOnCancellation {
+                SomeAPI.cleanUpResources()
+            }
+        }
+    }
+</code></pre>
+<p>This example provides a clear, three-fold demonstration of bridging traditional asynchronous APIs with the power of Kotlin Coroutines. First, it illustrates the wrapping of callback-based APIs. The <code>SomeAPI.getFoo</code> method, a typical asynchronous function that delivers its result or error via distinct onSuccess and onFailure callbacks, is transformed. Inside MyCode, the getFoo suspending function uses suspendCancellableCoroutine to immediately suspend the calling coroutine. This allows <code>SomeAPI.getFoo</code> to be invoked, with its callbacks seamlessly wired to <code>continuation.resume(foo)</code> for success or <code>continuation.resumeWithException(it)</code> for failure, effectively converting an imperative callback pattern into a sequential, suspendable call.</p>
+<p>Second, the example highlights seamless error and result propagation. By mapping SomeAPI's <code>onSuccess</code> to <code>continuation.resume</code> and <code>onFailure</code> to <code>continuation.resumeWithException</code>, the coroutine system inherently handles the outcome. A successful <code>Foo</code> result flows directly as the return value of the suspend function, while any Exception from the underlying API is rethrown, allowing standard try-catch blocks in the calling coroutine to manage errors. This eliminates the need for manual error checking or complex callback chaining.</p>
+<p>Finally, a critical aspect of robust asynchronous programming is there right in front of us: correct resource cleanup upon cancellation. The <code>continuation.invokeOnCancellation</code> block is important. Should the coroutine calling <code>getFoo</code> be cancelled before <code>SomeAPI.getFoo</code> completes, <code>SomeAPI.cleanUpResources()</code> is guaranteed to execute. This mechanism ensures that any resources held or operations initiated by the underlying <code>SomeAPI</code> are properly released or halted, preventing leaks and maintaining system stability even when long-running operations are unexpectedly terminated.</p>
+<p>Lots stuff to take in, regardless we end-up with a very nice way to call that call-back based API:</p>
+<pre><code class="language-kotlin">suspend fun oneFoo() : Foo {
+    try {
+        return MyCode.getFoo();
+    } catch(...) {
+        //...
+    }
+}
+</code></pre>
+<h3 id="wrapping-the-accept-completionhandler">Wrapping the Accept <code>CompletionHandler</code><a class="headerlink" href="#wrapping-the-accept-completionhandler" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Let's apply what we learned in the previous section now for creating a suspending extension function for accepting incoming client connections:</p>
+<pre><code class="language-kotlin">package rs.reza.pub.rs.reza.blog.nioserver.handlers
+
+import kotlinx.coroutines.suspendCancellableCoroutine
+import java.nio.channels.AsynchronousServerSocketChannel
+import java.nio.channels.AsynchronousSocketChannel
+import java.nio.channels.CompletionHandler
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+
+
+suspend fun AsynchronousServerSocketChannel.acceptAsync(): AsynchronousSocketChannel =
+    suspendCancellableCoroutine { continuation -&gt;
+        accept(
+            Unit,
+            object : CompletionHandler&lt;AsynchronousSocketChannel, Unit&gt; {
+                override fun completed(clientChannel: AsynchronousSocketChannel, attachment: Unit) {
+                    continuation.resume(clientChannel)
+                }
+
+                override fun failed(exception: Throwable, attachment: Unit) {
+                    continuation.resumeWithException(exception)
+                }
+            })
+
+        continuation.invokeOnCancellation { close() }
+    }
+</code></pre>
+<p>In the code above: <br />
+* we are wrapping a <code>CompletionHandler</code> that can be registered for accepting incoming client connections with <code>AsynchronousServerSocketChannel</code>. We can spot a <code>CompletionHandler</code> for accepting connection that has following type params:</p>
+<p><code>kotlin
+ CompletionHandler&lt;AsynchronousSocketChannel, Unit&gt;</code><br />
+* Since we really are interested to pass the <code>AsynchronousSocketChannel</code> to the continuation, we really don't need to maintain any special state in attachment, hence the attachment has type <code>Unit</code>. This would bring a huge simplification because the state that now needs to be maintained will live in higher level code where it is dealing with suspendable function calls!</p>
+<ul>
+<li>
+<p>As you could guess, we take advantage of <code>continuation.resumeWithException</code> to pass on exception to the continuation: Any exception that occurs while we were waiting for new incoming connection now can be handled in a try-catch block in the high level code.</p>
+</li>
+<li>
+<p>With <code>continuation.invokeOnCancellation</code> we are basically saying if the coroutine got cancelled to just call <code>AsynchronousServerSocketChannel::close</code> on the way out.</p>
+</li>
+</ul>
+<h2 id="beyond-callback">Beyond Callback<a class="headerlink" href="#beyond-callback" title="Anchor link to this section for reference">&para;</a></h2>
+<p>Now, let's dive into <code>processClientChannel</code>:</p>
+<pre><code class="language-kotlin">    private suspend fun processClientChannel(
+        clientSocketChannel: AsynchronousSocketChannel
+    ) = coroutineScope {
+        val bufferChannel = Channel&lt;ByteBuffer&gt;(capacity = Channel.UNLIMITED, onBufferOverflow = BufferOverflow.SUSPEND)
+        clientSocketChannel.use {
+            try {
+                val readCoroutine = launch {
+                    withContext(asyncChannelGroupDispatcher) {
+                        read(clientSocketChannel, bufferChannel)
+                    }
+                }
+                val writeCoroutine = launch {
+                    withContext(asyncChannelGroupDispatcher) {
+                        write(clientSocketChannel, bufferChannel)
+                    }
+                }
+
+                joinAll(readCoroutine, writeCoroutine)
+            } catch (ex: CancellationException) {
+                logger.warning(&quot;Coroutine ${coroutineContext[CoroutineName]} got cancelled.&quot;, ex)
+                throw ex
+            } catch (ex: IOException) {
+                logger.error(
+                    &quot;I/O exception while processing client connection at ${clientSocketChannel.remoteAddress}&quot;,
+                    ex
+                )
+            } catch (ex: Exception) {
+                logger.error(
+                    &quot;unexpected exception while processing client connection at ${clientSocketChannel.remoteAddress}&quot;,
+                    ex
+                )
+            }
+        }
+    }
+</code></pre>
+<p>we are using <code>withContext(asyncChannelGroupDispatcher)</code> to signal which Dispatcher we desire our coroutines responsible for reading and writing to <code>AsynchronousSocketChannel</code> should be scheduled. Additionally we use channels to share buffers from coroutines that <code>read</code> to coroutines that <code>write</code> on the same channel.</p>
+<p>And here is how <code>read</code> and <code>write</code> functions are implemented (notice the usage of <code>readAsync</code> and <code>writeAsync</code>), they should look familiar to you:</p>
+<pre><code class="language-kotlin">    private suspend fun write(
+        clientChannel: AsynchronousSocketChannel,
+        channel: Channel&lt;ByteBuffer&gt;
+    ) {
+        for (buf in channel) {
+            Utils.changeLetterCase(buf)
+            while (buf.hasRemaining()) {
+                buf.flip()
+                val numsWritten = clientChannel.writeAsync(buf)
+                if (numsWritten == -1) {
+                    logger.info(&quot;client channel closed at ${clientChannel.remoteAddress}&quot;)
+                    return
+                }
+            }
+        }
+    }
+
+    private suspend fun read(
+        clientChannel: AsynchronousSocketChannel,
+        channel: Channel&lt;ByteBuffer&gt;
+    ) {
+        while (clientChannel.isOpen) {
+            val buffer = ByteBuffer.allocate(80)
+            val readBytes = clientChannel.readAsync(buffer)
+            if (readBytes == -1) {
+                logger.info(&quot;client at ${clientChannel.remoteAddress} closed the connection.&quot;)
+                return
+            }
+
+            if (readBytes &gt; 0) {
+                channel.send(buffer)
+            }
+        }
+    }
+
+</code></pre>
+<h3 id="readasync"><code>readAsync</code><a class="headerlink" href="#readasync" title="Anchor link to this section for reference">&para;</a></h3>
+<p>here is <code>readAsync</code> working under the hood:</p>
+<pre><code class="language-kotlin">suspend fun AsynchronousSocketChannel.readAsync(buffer: ByteBuffer): Int =
+    suspendCancellableCoroutine { continuation -&gt;
+        read(
+            buffer,
+            Unit,
+            object : CompletionHandler&lt;Int, Unit&gt; {
+                override fun completed(bytesRead: Int, attachment: Unit) {
+                   continuation.resume(bytesRead)
+                }
+
+                override fun failed(exception: Throwable, attachment: Unit) {
+                    continuation.resumeWithException(exception)
+                }
+
+            }
+        )
+
+        continuation.invokeOnCancellation { close() }
+    }
+
+</code></pre>
+<p>Please note that we only can return the number of bytes read <code>readAsync</code>.</p>
+<h3 id="writeasync"><code>writeAsync</code><a class="headerlink" href="#writeasync" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Finally, the <code>writeAsync</code>:</p>
+<pre><code class="language-kotlin">
+suspend fun AsynchronousSocketChannel.writeAsync(buffer: ByteBuffer): Int =
+    suspendCancellableCoroutine { continuation -&gt;
+        write(
+            buffer,
+            Unit,
+            object : CompletionHandler&lt;Int, Unit&gt; {
+                override fun completed(bytesWritten: Int, attachment: Unit) {
+                    continuation.resume(bytesWritten)
+                }
+
+                override fun failed(exception: Throwable, attachment: Unit) {
+                    continuation.resumeWithException(exception)
+                }
+
+            }
+        )
+
+        continuation.invokeOnCancellation { close() }
+    }
+
+</code></pre>
+<p>Please note that we only can return the number of bytes written to the channel from <code>writeAsync</code>.</p>
+<h2 id="full-code">Full Code<a class="headerlink" href="#full-code" title="Anchor link to this section for reference">&para;</a></h2>
+<p>You can find the whole code we developed in second part <a href="https://github.com/rasouli/blog-codes/blob/8596668f6ae6e0a057ffe47084ecef457984e086/jvm/kotlin-java-nio/kotlin-java-nio/src/main/kotlin/rs/reza/pub/nioserver/AsyncServer.kt">here</a>.</p>
+<h2 id="final-words">Final words<a class="headerlink" href="#final-words" title="Anchor link to this section for reference">&para;</a></h2>
+<p>We came really far: We figured out how to use <code>AsynchronousSocketChannel</code>, <code>CompletionHandler</code> and Attachments in Kotlin and then learned how to build powerful abstraction on top of them and use it within Kotlin Coroutine ecosystem. </p>
+<p>I think what we learned is that we can write far more maintainable code in Kotlin when it comes down to dealing with Callback based API not only that, but we can easily extend the code to add more functionality such as buffer management, resource sharing, statistics etc which would have been far more painful with Attachments and <code>CompletionHandler</code>s. </p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../b-2025-08-16-social-life-software-bc-rel-p1/" class="md-footer__link md-footer__link--prev" aria-label="Previous: The Social Life of Software: Bounded Contexts Relationships in Action (Part I)">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                The Social Life of Software: Bounded Contexts Relationships in Action (Part I)
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../b-2025-05-24-kt-java-nio2-async-channels-p1/" class="md-footer__link md-footer__link--next" aria-label="Next: Kotlin Coroutines and Java NIO 2 Asynchronous Channels (Part I)">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Kotlin Coroutines and Java NIO 2 Asynchronous Channels (Part I)
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      &copy; 2025-2026 Reza Rasouli
+
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.footer", "navigation.tracking", "navigation.top", "navigation.sections", "navigation.indexes", "navigation.instant", "navigation.instant.progress", "search.suggest", "search.highlight", "search.share", "content.action.edit", "content.action.view", "content.code.copy", "content.code.annotate", "content.tabs.link", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

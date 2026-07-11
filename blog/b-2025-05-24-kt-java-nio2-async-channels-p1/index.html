@@ -1,0 +1,988 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Programming, Technology and Machines">
+      
+      
+        <meta name="author" content="Reza Rasouli">
+      
+      
+        <link rel="canonical" href="https://pub.reza.rs/blog/b-2025-05-24-kt-java-nio2-async-channels-p1/">
+      
+      
+        <link rel="prev" href="../b-2025-07-27-kt-java-nio2-async-channels-p2/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/logo-r.webp">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Kotlin Coroutines and Java NIO 2 Asynchronous Channels (Part I) - Random Walks & Racing Thoughts</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CLato:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Lato"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/blog.min.css">
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/blog.min.css.map">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="green">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#part-i-a-callback-based-asynchronous-non-blocking-server-using-asynchronousserversocketchannel-in-kotlin" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Random Walks &amp; Racing Thoughts" class="md-header__button md-logo" aria-label="Random Walks & Racing Thoughts" data-md-component="logo">
+      
+  <img src="../assets/logo-r.webp" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Random Walks & Racing Thoughts
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Kotlin Coroutines and Java NIO 2 Asynchronous Channels (Part I)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="green"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="green" data-md-color-accent="green"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../index.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Blog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../about/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Random Walks &amp; Racing Thoughts" class="md-nav__button md-logo" aria-label="Random Walks & Racing Thoughts" data-md-component="logo">
+      
+  <img src="../assets/logo-r.webp" alt="logo">
+
+    </a>
+    Random Walks & Racing Thoughts
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#part-i-a-callback-based-asynchronous-non-blocking-server-using-asynchronousserversocketchannel-in-kotlin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part I: A Callback-based Asynchronous Non-blocking Server using AsynchronousServerSocketChannel in Kotlin
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setting-up-the-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Setting up the server
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Setting up the server">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#accepting-incoming-connections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Accepting Incoming Connections
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Accepting Incoming Connections">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#attachment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Attachment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#completionhandler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CompletionHandler
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#putting-pieces-together-in-the-main-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Putting pieces together in the main method
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reading-and-writing-with-asynchronoussocketchannels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reading and Writing with AsynchronousSocketChannels
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Reading and Writing with AsynchronousSocketChannels">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#attachment-for-asynchronoussocketchannel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Attachment for AsynchronousSocketChannel
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#readwritecompletionhandler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ReadWriteCompletionHandler
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ReadWriteCompletionHandler">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-single-completionhandler-for-reading-and-writing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A Single CompletionHandler for Reading and Writing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#readwritecompletionhandler-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ReadWriteCompletionHandler Logic
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-the-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing the server
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wrapping-up-part-i" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wrapping Up Part I
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+  <h1>Kotlin Coroutines and Java NIO 2 Asynchronous Channels (Part I)</h1>
+
+<p>Thanks to Kotlin Coroutines and its ecosystem, we can write much more maintainable code when taking advantage of Java NIO 2 Asynchronous Channels. This two part blog post will showcase how we can fuse Java NIO 2 <a href="https://docs.oracle.com/javase/7/docs/api/java/nio/channels/AsynchronousServerSocketChannel.html">AsynchronousServerSocketChannel</a> and Kotlin Coroutines together to write a maintainable non-blocking asynchronous network applications.</p>
+<!-- more -->
+
+<h2 id="part-i-a-callback-based-asynchronous-non-blocking-server-using-asynchronousserversocketchannel-in-kotlin">Part I: A Callback-based Asynchronous Non-blocking Server using AsynchronousServerSocketChannel in Kotlin<a class="headerlink" href="#part-i-a-callback-based-asynchronous-non-blocking-server-using-asynchronousserversocketchannel-in-kotlin" title="Anchor link to this section for reference">&para;</a></h2>
+<p>A typical implementation of an Asynchronous and Non-Blocking network applications using Java NIO 2 API is basically implemented in two approaches using <code>AsynchronousServerSocketChannel</code>:</p>
+<ul>
+<li><strong>Using <code>AsynchronousChannel</code> Future-based API</strong>: using a future-based API such as future-based <a href="https://docs.oracle.com/javase/7/docs/api/java/nio/channels/AsynchronousSocketChannel.html#read(java.nio.ByteBuffer)"><code>read</code></a> </li>
+<li><strong>Registering I/O callbacks</strong>: Using Callbacks which implement the <a href="https://docs.oracle.com/javase/7/docs/api/java/nio/channels/CompletionHandler.html"><code>CompletionHandler</code></a> interface and are registeretd with a callback based method such as <a href="https://docs.oracle.com/javase/7/docs/api/java/nio/channels/AsynchronousSocketChannel.html#read(java.nio.ByteBuffer,%20A,%20java.nio.channels.CompletionHandler)"><code>read</code></a></li>
+</ul>
+<p>For our goal in this blog post, we will be focusing on the callback based API in Kotlin (Part I), and use that as a leverage to use suspendable Kotlin coroutines to write maintainable Non-blocking asynchronous code (Part II). The server application that we develope in these blog posts is a toy server which changes the letter case of English alphabets written to its socket channel (using a terminal application like telnet). for e.g. it would convert <code>wOw</code> to <code>WoW</code>.</p>
+<h2 id="setting-up-the-server">Setting up the server<a class="headerlink" href="#setting-up-the-server" title="Anchor link to this section for reference">&para;</a></h2>
+<p>Normally we would start bootstrapping our Asynchronous and Non-Blocking server by setting up <a href="https://docs.oracle.com/javase/7/docs/api/java/nio/channels/AsynchronousChannelGroup.html"><code>AsynchronousChannelGroup</code></a> backed by a customized <code>ThreadPool</code></p>
+<pre><code class="language-kotlin">//...
+    @JvmStatic
+    fun main(args: Array&lt;String&gt;) {
+        val backingThreadPool = Executors.newFixedThreadPool(2)
+        val asyncChannelGroup = AsynchronousChannelGroup.withThreadPool(backingThreadPool)
+        val address = InetSocketAddress(HOST, PORT)
+        val asyncServerSocketChannel = listen(address, asyncChannelGroup)
+        // ...
+    }
+//...
+</code></pre>
+<p><em>If you are interested for a quick overview on <code>AsynchronousChannelGroup</code> here is a short <a href="https://youtu.be/SYaWvMHkWS0?si=1jIlizZFUsZrIim7">video</a> in which I have explained what purpose it serves.</em></p>
+<p>The <code>listen</code> method setups  an <code>AsynchronousServerSocketChannel</code> when provided with an <code>InetSocketAddress</code> and a <code>AsynchronousChannelGroup</code>:</p>
+<pre><code class="language-kotlin">private fun listen(address: InetSocketAddress, group: AsynchronousChannelGroup) = runCatching {
+    AsynchronousServerSocketChannel.open(group)
+            .bind(address)
+            .setOption(StandardSocketOptions.SO_RCVBUF, SOCKET_RECIEVE_BUFFER_SIZE)
+    }.onSuccess {
+        logger.info(&quot;successfully bound to address ${address.hostName}:${address.port}&quot;)
+    }.onFailure { exception -&gt;
+        logger.error(&quot;failed to bind to address ${address.hostName}:${address.port}&quot;, exception)
+}.getOrThrow()
+
+</code></pre>
+<p>As you saw, pretty basic stuff: binding to the provided address for the server to listen for incoming connections and setting the socket recieve buffer size (<a href="https://docs.oracle.com/javase/7/docs/api/java/nio/channels/AsynchronousSocketChannel.html">more</a> on socket options, please check with your appropriate jdk version doc.)</p>
+<h3 id="accepting-incoming-connections">Accepting Incoming Connections<a class="headerlink" href="#accepting-incoming-connections" title="Anchor link to this section for reference">&para;</a></h3>
+<p>To start with accepting incoming connection we need to setup two things:<br />
+1. An Attachment<br />
+2. A Callback implementing Completion Handlers</p>
+<h4 id="attachment">Attachment<a class="headerlink" href="#attachment" title="Anchor link to this section for reference">&para;</a></h4>
+<p>An <code>Attachment</code> can be considered a class that contains arbitary set  of metadata, resources or values <em>associated</em> with an I/O operation. As an example, when we read from or write to an <code>AsynchronousSocketChannel</code> the attachment can contain the state of the protocol specific to that socket channel(e.g. number of bytes read or written, Mutexes, Read Write locks). In another words, an Attachment is a way to maintan state across I/O Callback invokations.</p>
+<p>Let's design an Attachment class for accepting incoming connections! What we want is to continuously accept new client connections. There is not much state that we need to maintain while we accept new incoming connections. So, it should suffice to only hold on to our precious <code>AsynchronousServerSocketChannel</code>:</p>
+<pre><code class="language-kotlin">class ServerSocketChannelAttachment(
+    val asynchronousServerSocketChannel: AsynchronousServerSocketChannel
+)
+</code></pre>
+<p>Now, we need to use this attachment with a Callback that implements <code>CompletionHandler</code> to accept incoming connections.</p>
+<h4 id="completionhandler"><code>CompletionHandler</code><a class="headerlink" href="#completionhandler" title="Anchor link to this section for reference">&para;</a></h4>
+<p>A <code>CompletionHandler</code> is the key interface to implement Callbacks which contain the logic to handle when certain I/O event complete.</p>
+<p>A <code>CompletionHandler</code> interface, contains two important methods: <br />
+* <code>completed</code>: is executed when the I/O operation completes successuflly (e.g. a connection is accepted, a read from the underlying channel has finished)<br />
+* <code>failed</code>: when the I/O operation faces an exception (e.g. read / write fails as client closes connection)</p>
+<p><em>I have made another <a href="https://www.youtube.com/watch?v=qquvIgVSBTM"><code>video</code></a> explaining <code>CompletionHandler</code> and <code>Attachment</code> together.</em></p>
+<p>To register a <code>CompletionHandler</code> with type of an I/O operation (e.g. accepting, reading or writing), we need to use our <code>ServerSocketChannelAttachment</code> class. Given all that, we are finally ready to implement a <code>CompletionHandler</code> Callback that when invoked:</p>
+<ol>
+<li>Immediately registers another callback to accept other incoming connections</li>
+<li>Intercepts the incoming client connection represented by <code>AsynchronousSocketChannel</code> class</li>
+<li>Registers a callback for Read I/O event on the client connection (<code>AsynchronousSocketChannel::read</code>)</li>
+</ol>
+<pre><code class="language-kotlin">private object AcceptanceCompletionHandler :
+    CompletionHandler&lt;AsynchronousSocketChannel, ServerSocketChannelAttachment&gt; {
+    override fun completed(
+        clientSocketChannel: AsynchronousSocketChannel,
+        asyncServerSocketAttachment: ServerSocketChannelAttachment
+    ) {
+        logger.info(&quot;got a connection from ${clientSocketChannel.remoteAddress}&quot;)
+        // immediately register a callback for accepting new connections.
+        asyncServerSocketAttachment.acceptConnection()
+        // create a new ClientSocketChannelAttachment class and associate it with this client connection (more on this in the next sections).
+        ClientSocketChannelAttachment(clientAsyncChannel = clientSocketChannel).read()
+    }
+
+    override fun failed(exc: Throwable, attachment: ServerSocketChannelAttachment) {
+        logger.error(&quot;accept handler failed with exception&quot;, exc)
+    }
+}
+</code></pre>
+<p>Note that we have defined <code>ServerSocketChannelAttachment.acceptConnection</code> extension method in the following way:</p>
+<pre><code class="language-kotlin">private fun ServerSocketChannelAttachment.acceptConnection() = runCatching {
+    // this is how we register the accept Callback, using the `accept` method on the`AsynchronousServerSocketChannel` that is contained in the attachment class.
+    asynchronousServerSocketChannel.accept(
+        this, // this refers to current `ServerSocketChannelAttachment` instance 
+        AcceptanceCompletionHandler
+    )
+}.onFailure { exception -&gt;
+    logger.error(&quot;failed to register accept call back handler on server socket channel&quot;, exception)
+}.getOrThrow()
+</code></pre>
+<h4 id="putting-pieces-together-in-the-main-method">Putting pieces together in the <code>main</code> method<a class="headerlink" href="#putting-pieces-together-in-the-main-method" title="Anchor link to this section for reference">&para;</a></h4>
+<p>Now that we have seen how we can setup our server and register a callback for accepting incoming connection, we can complete our <code>main</code> method:</p>
+<pre><code class="language-kotlin">fun main(args: Array&lt;String&gt;) {
+    val backingThreadPool = Executors.newFixedThreadPool(2)
+    val asyncChannelGroup = AsynchronousChannelGroup.withThreadPool(backingThreadPool)
+    val address = InetSocketAddress(HOST, PORT)
+    val asyncServerSocketChannel = listen(address, asyncChannelGroup)
+    asyncServerSocketChannel.use {
+        ServerSocketChannelAttachment(it).acceptConnection()
+        joinCurrentThread()
+    }
+}
+
+private fun listen(address: InetSocketAddress, group: AsynchronousChannelGroup) = {...}
+
+class ServerSocketChannelAttachment(
+    val asynchronousServerSocketChannel: AsynchronousServerSocketChannel
+)
+
+private fun ServerSocketChannelAttachment.acceptConnection() = runCatching {
+    asynchronousServerSocketChannel.accept(
+        this,
+        AcceptanceCompletionHandler
+    )
+}.onFailure { exception -&gt;
+    //...
+}.getOrThrow()
+
+private object AcceptanceCompletionHandler :
+    CompletionHandler&lt;AsynchronousSocketChannel, ServerSocketChannelAttachment&gt; {...}
+
+private fun joinCurrentThread() = runCatching {
+    Thread.currentThread().join()
+}.onFailure { exception: Throwable -&gt;
+    logger.error(&quot;main thread interrupted with exception&quot;, exception)
+}.getOrThrow()
+
+</code></pre>
+<p>Here are couple of noteworthy points:</p>
+<ul>
+<li>
+<p><code>CompletionHandler</code> for accepting incoming connections can be a singletone and hence we used the <code>object</code> keyword from Kotlin when implementing <code>AcceptanceCompletionHandler</code>.</p>
+</li>
+<li>
+<p>We basically can re-use an instance of <code>ServerSocketChannelAttachment</code> for registering further callbacks, since all the state it contains is a refrence to the  <code>AsynchronousServerSocketChannel</code> which was created in the <code>main</code> method.</p>
+</li>
+<li>
+<p>Since <code>AsynchronousServerSocketChannel</code> implements <code>Closable</code> we can take advantage of Kotlin's <code>use</code> extension method defined on <code>Closable</code> resource in the <code>main</code> method body, for clean-up purpose.</p>
+</li>
+<li>
+<p><code>joinCurrentThread</code> is called from <code>main</code> method to join on the current thread to keep the application running while we are busy handling I/O events.</p>
+</li>
+</ul>
+<h2 id="reading-and-writing-with-asynchronoussocketchannels">Reading and Writing with <code>AsynchronousSocketChannels</code><a class="headerlink" href="#reading-and-writing-with-asynchronoussocketchannels" title="Anchor link to this section for reference">&para;</a></h2>
+<p>In earlier section, we immedialetly registered a Callback for reading from incoming client socket connection. In this section we will show how we can achieve that by using a different type of Attachment which we will call <code>ClientSocketChannelAttachment</code> and using a <code>CompletionHandler</code> implementation named <code>ReadWriteCompletionHandler</code> which we will share for both reading and writing.</p>
+<h3 id="attachment-for-asynchronoussocketchannel">Attachment for <code>AsynchronousSocketChannel</code><a class="headerlink" href="#attachment-for-asynchronoussocketchannel" title="Anchor link to this section for reference">&para;</a></h3>
+<p>You should have already noticed the <code>completed</code> method signature from <code>AcceptanceCompletionHandler</code>:</p>
+<pre><code class="language-kotlin">private object AcceptanceCompletionHandler :
+    CompletionHandler&lt;AsynchronousSocketChannel, ServerSocketChannelAttachment&gt; {
+    override fun completed(
+        clientSocketChannel: AsynchronousSocketChannel // &lt;-- this one,
+        asyncServerSocketAttachment: ServerSocketChannelAttachment
+    ) {...}
+</code></pre>
+<p>when this method is called, we are receiving an instance of <code>AsynchronousSocketChannel</code> or what we otherwise would recognize as client connection. This is actually the real deal, the actual asynchronous channel that we will do our buffered reads and writes. Now we are facing with the question of what can we keep inside this attachment <code>ClientSocketChannelAttachment</code> for each individual client connection?</p>
+<p>Taking a step back, what we want to do is simply to read into a buffer the English letters that a client would write to the socket on their end, change the letter casing (e.g. <code>a</code> to <code>A</code> or <code>B</code> to <code>b</code>) and then write that back to the channel using the very same buffer. This gives us following idea what to hold in each Attachment:</p>
+<ol>
+<li>The <code>AsynchronousSocketChannel</code> instance which represents the client connection.</li>
+<li>A <code>ByteBuffer</code> to read into, modify and write from.</li>
+<li>A boolean flag to indicate the state of the client connection: Either we are Reading into the buffer (read mode) or Writing from the buffer (write mode).</li>
+</ol>
+<pre><code class="language-kotlin">private class ClientSocketChannelAttachment(
+    val clientAsyncChannel: AsynchronousSocketChannel,
+    var inReadMode: Boolean = true,
+    val buffer: ByteBuffer = ByteBuffer.allocate(1024)
+)
+</code></pre>
+<p>As mentioned earlier, the <code>clientAsyncChannel</code> (of type <code>AsynchronousSocketChannel</code>) represents the client asynchronous channel that we intercepted from the <code>AsynchronousServerSocketChannel</code>. To read or write to the client connection in an asynchronous and non-blocking way, we need to register read and write callbacks, thanks to Callback based APIs provided by the <code>AsynchronousSocketChannel</code>. Let's proceed to introduce two extension methods on <code>ClientSocketChannelAttachment</code> which register those callbacks re-using the same <code>ClientSocketChannelAttachment</code>attachment instance.</p>
+<pre><code class="language-kotlin">private fun ClientSocketChannelAttachment.read() = runCatching {
+    clientAsyncChannel.read(
+        buffer,
+        this,
+        ReadWriteCompletionHandler
+    )
+}.onFailure { exception -&gt;
+    logger.error(&quot;failed to register read completion handler on client socket channel&quot;, exception)
+}.getOrThrow()
+
+private fun ClientSocketChannelAttachment.write() = runCatching {
+    clientAsyncChannel.write(
+        buffer,
+        this,
+        ReadWriteCompletionHandler
+    )
+}.onFailure { exception -&gt;
+    logger.error(&quot;failed to register write completion handler on client socket channel&quot;, exception)
+}.getOrThrow()
+</code></pre>
+<p>We will get into defining <code>ReadWriteCompletionHandler</code> in a moment, but what is important from the above extension methods is that we re-use the <code>ByteBuffer</code> for read and write. This <code>ByteBuffer</code> is contained within the <code>ClientSocketChannelAttachment</code> and we will create one instance of the very same attachment per client connection.</p>
+<h3 id="readwritecompletionhandler"><code>ReadWriteCompletionHandler</code><a class="headerlink" href="#readwritecompletionhandler" title="Anchor link to this section for reference">&para;</a></h3>
+<p>We are now closing the loop for having a basic async non-blocking server up and running by implementing a <code>CompletionHandler</code> which we would re-use for both Read and Write operations.</p>
+<h4 id="a-single-completionhandler-for-reading-and-writing">A Single <code>CompletionHandler</code> for Reading and Writing<a class="headerlink" href="#a-single-completionhandler-for-reading-and-writing" title="Anchor link to this section for reference">&para;</a></h4>
+<p>Just a quick look at callback based API for methods <code>read</code> and <code>write</code> on <code>AsynchronousSocketChannel</code> class, we would understand that we need to implement our <code>ReadWriteCompletionHandler</code> in the following way:</p>
+<pre><code class="language-kotlin">private object ReadWriteCompletionHandler : CompletionHandler&lt;Int, ClientSocketChannelAttachment&gt; {
+    override fun completed(result: Int, attachment: ClientSocketChannelAttachment) {...}
+
+    override fun failed(exc: Throwable, attachment: ClientSocketChannelAttachment) {...}
+}
+</code></pre>
+<p>I think the important note from above code is that, <code>result: Int</code> parameter tells us how many bytes have been read or written from the buffer that is passe into respective <code>read</code> and <code>write</code> methods. Here is a quick refresher how we would use a buffer and the <code>ReadWriteCompletionHandler</code>:</p>
+<pre><code class="language-kotlin">clientAsyncChannel.read(
+    buffer,
+    this,
+    ReadWriteCompletionHandler
+)
+</code></pre>
+<pre><code>clientAsyncChannel.write(
+    buffer,
+    this,
+    ReadWriteCompletionHandler
+)
+</code></pre>
+<p><em>Just a side note: in an ideal world we should consider having seperate handlers for Reading and Writing.</em></p>
+<h4 id="readwritecompletionhandler-logic"><code>ReadWriteCompletionHandler</code> Logic<a class="headerlink" href="#readwritecompletionhandler-logic" title="Anchor link to this section for reference">&para;</a></h4>
+<p>Within the handler, we need to handle couple of cases:<br />
+* if <code>result</code> is -1 this means that we no longer can perform read/write on the client socket channel.<br />
+* if we read something in the reading mode into the buffer, we will process that buffer content immediately and switch to write mode.<br />
+* only after the whole buffer content after modification (in write mode) is written to the client socket channel we will switch to read mode.</p>
+<p>The above straight-forward and simple lines of logic will help us to implement a very basic <code>CompletionHandler</code> that we can be re-use for both reading and writing to client channels.</p>
+<pre><code class="language-kotlin">    private object ReadWriteCompletionHandler : CompletionHandler&lt;Int, ClientSocketChannelAttachment&gt; {
+        override fun completed(result: Int, attachment: ClientSocketChannelAttachment) {
+            if (result == -1) {
+                logger.info(&quot;client at  ${attachment.clientAsyncChannel.remoteAddress} disconnected&quot;)
+                attachment.close()
+                return
+            }
+
+            if (attachment.inReadMode) {
+                // if reading 0 bytes, just register read callback.
+                if (result == 0) {
+                    attachment.inReadMode = true
+                    attachment.read()
+                    return
+                }
+
+                // in a different case, we now process the data in the buffer.
+                attachment.inReadMode = false
+                attachment.buffer.flip()
+                Utils.changeLetterCase(attachment.buffer)
+                attachment.write()
+            } else {
+                // while not in read mode, since there is data in the buffer, we keep writing
+                // until the buffer is empty.
+                if (attachment.buffer.hasRemaining()) {
+                    attachment.write()
+                } else {
+                    // since there is no data remaining in the buffer, we are now, ready to switch to read mode.
+                    attachment.inReadMode = true
+                    attachment.buffer.clear()
+                    attachment.read()
+                }
+            }
+        }
+
+        override fun failed(exc: Throwable, attachment: ClientSocketChannelAttachment) {
+            val op = if (attachment.inReadMode) &quot;read&quot; else &quot;write&quot;
+            logger.error(&quot;$op failed for client: ${attachment.clientAsyncChannel.remoteAddress}&quot;, exc)
+            attachment.close()
+        }
+
+        private fun ClientSocketChannelAttachment.close() = runCatching {
+            clientAsyncChannel.close()
+        }.onFailure { exception -&gt;
+            logger.error(&quot;IO exception while closing client connection&quot;, exception)
+        }
+
+    }
+
+}
+
+</code></pre>
+<p>Also here is the code which modifies the <code>ByteBuffer</code> content based on their Letter casing:</p>
+<pre><code class="language-kotlin">object Utils {
+     private const val SPACE_BYTE = ' '.code.toByte()
+     fun changeLetterCase(buffer: ByteBuffer) {
+        for (pos in 0..&lt;buffer.limit()) {
+            val char = buffer.get(pos).toInt().toChar()
+            if (char.isLetter()) {
+                buffer.put(
+                    pos,
+                    char.code.toByte().xor(SPACE_BYTE)
+                )
+            }
+        }
+}
+</code></pre>
+<h2 id="testing-the-server">Testing the server<a class="headerlink" href="#testing-the-server" title="Anchor link to this section for reference">&para;</a></h2>
+<p>You can use <code>telnet</code> to test the <a href="https://github.com/rasouli/blog-codes/blob/main/jvm/kotlin-java-nio/kotlin-java-nio/src/main/kotlin/rs/reza/pub/nioserver/BasicAsyncServer.kt">server</a> we wrote in this part on the command line:</p>
+<pre><code> telnet localhost 6070
+</code></pre>
+<h2 id="wrapping-up-part-i">Wrapping Up Part I<a class="headerlink" href="#wrapping-up-part-i" title="Anchor link to this section for reference">&para;</a></h2>
+<p>The whole application code can be found <a href="https://github.com/rasouli/blog-codes/tree/main/jvm/kotlin-java-nio/kotlin-java-nio">here</a>. In Part I, we learned how we can create a Non-blocking asynchronous server using Java NIO 2 and Kotlin using its Callback based API. In Part II (stay tuned!) we will continue to take advantage of Kotlin Coroutines to write more maintainable code while achieving the same functionality in <a href="../b-2025-07-27-kt-java-nio2-async-channels-p2/">Part II</a>.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../b-2025-07-27-kt-java-nio2-async-channels-p2/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Kotlin Coroutines and Java NIO 2 Asynchronous Channels (Part II)">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Kotlin Coroutines and Java NIO 2 Asynchronous Channels (Part II)
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      &copy; 2025-2026 Reza Rasouli
+
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.footer", "navigation.tracking", "navigation.top", "navigation.sections", "navigation.indexes", "navigation.instant", "navigation.instant.progress", "search.suggest", "search.highlight", "search.share", "content.action.edit", "content.action.view", "content.code.copy", "content.code.annotate", "content.tabs.link", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
