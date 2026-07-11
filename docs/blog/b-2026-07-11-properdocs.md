@@ -1,6 +1,6 @@
 ---
 title: "Migrating From Bearblog to Properdocs"
-slug: b-2026-07-11-properdocs.md
+slug: b-2026-07-11-properdocs
 date: 2026-07-11 17:00:00
 publish: true
 tags:
