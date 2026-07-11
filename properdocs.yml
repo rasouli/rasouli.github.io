@@ -7,6 +7,9 @@ copyright: >
 extra_templates:
   - CNAME
 
+nav:
+  - About
+  - Blog
 
 theme:
   name: material
@@ -75,14 +78,14 @@ markdown_extensions:
   # # - pymdownx.emoji:
   # #     emoji_index: !!python/name:material.extensions.emoji.twemoji
   # #     emoji_generator: !!python/name:material.extensions.emoji.to_svg
-  # - pymdownx.highlight:
-  #     auto_title: false
-  #     anchor_linenums: true
-  #     line_spans: __span
-  #     pygments_lang_class: true
-  #     use_pygments: true
-  # - pymdownx.inlinehilite
-  # - pymdownx.keys
+  - pymdownx.highlight:
+       auto_title: false
+       anchor_linenums: true
+       line_spans: __span
+       pygments_lang_class: true
+       use_pygments: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
   # - pymdownx.magiclink
   # - pymdownx.mark
   # - pymdownx.tabbed:
@@ -95,8 +98,8 @@ markdown_extensions:
   # - pymdownx.tilde
   # - pymdownx.saneheaders
   # - pymdownx.smartsymbols
-  # - pymdownx.snippets
-  # - pymdownx.superfences:
+  - pymdownx.snippets
+  - pymdownx.superfences
   #     custom_fences:
   #       - name: mermaid
   #         class: mermaid
