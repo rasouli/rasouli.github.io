@@ -84,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#migrating-from-bearblog-to-properdocs" class="md-skip">
+        <a href="#handling-errors-in-java-panama-this-side-or-the-other-part-1" class="md-skip">
           Skip to content
         </a>
       
@@ -757,6 +757,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -904,6 +908,62 @@
     
   
     ddd
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="tags/error/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    error
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="tags/ffi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ffi
   
 
     
@@ -1180,6 +1240,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#handling-errors-in-java-panama-this-side-or-the-other-part-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Handling Errors in Java Panama: This side or the other (part 1)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#migrating-from-bearblog-to-properdocs" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1217,17 +1288,6 @@
     <span class="md-ellipsis">
       
         The Social Life of Software: Bounded Contexts Relationships in Action (Part II)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-social-life-of-software-bounded-contexts-relationships-in-action-part-i" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The Social Life of Software: Bounded Contexts Relationships in Action (Part I)
       
     </span>
   </a>
@@ -1276,6 +1336,38 @@
   ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   ~ SOFTWARE.
   -->
+
+<h2 id="handling-errors-in-java-panama-this-side-or-the-other-part-1"><a href="https://pub.reza.rs/blog/b-2026-11-15-panama-err-handling-p1/">Handling Errors in Java Panama: This side or the other (part 1)</a><a class="headerlink" href="#handling-errors-in-java-panama-this-side-or-the-other-part-1" title="Anchor link to this section for reference">&para;</a></h2>
+<!--suppress LongLine -->
+<div class="post-extra">
+    <div class="col">
+        <p class="post-date">2026-11-15 15:00:00</p>
+    </div>
+    <div class="col">
+
+        <a href="https://pub.reza.rs/blog/tags/java/">#java</a>
+
+        <a href="https://pub.reza.rs/blog/tags/panama/">#panama</a>
+
+        <a href="https://pub.reza.rs/blog/tags/ffi/">#ffi</a>
+
+        <a href="https://pub.reza.rs/blog/tags/error/">#error</a>
+
+    </div>
+</div>
+
+<p><img alt="None" src="assets/panama-err-handling-p1.jpg" /></p>
+<blockquote>
+<p>Photo taken from <a href="https://pixabay.com/photos/panama-city-panama-panama-avenue-2189313/">pixabay</a></p>
+</blockquote>
+<p>Been Thinking about how to properly handle error codes returned from invoking native functions using Java Panama recently. Also tempted to apply some <code>Exception</code> classe hierarchies, I kept dreaming how a container aware approach would look like? what it would take to apply <a href="https://en.wikipedia.org/wiki/Inversion_of_control">IoC</a>  here.</p>
+<div class="post-link">
+
+    <a href="https://pub.reza.rs/blog/b-2026-11-15-panama-err-handling-p1/" title="Handling Errors in Java Panama: This side or the other (part 1)">
+        Read more
+    </a>
+
+</div>
 
 <h2 id="migrating-from-bearblog-to-properdocs"><a href="https://pub.reza.rs/blog/b-2026-07-11-properdocs/">Migrating From Bearblog to Properdocs</a><a class="headerlink" href="#migrating-from-bearblog-to-properdocs" title="Anchor link to this section for reference">&para;</a></h2>
 <!--suppress LongLine -->
@@ -1381,28 +1473,6 @@
 <div class="post-link">
 
     <a href="https://pub.reza.rs/blog/b-2025-08-24-social-life-software-bc-rel-p2/" title="The Social Life of Software: Bounded Contexts Relationships in Action (Part II)">
-        Read more
-    </a>
-
-</div>
-
-<h2 id="the-social-life-of-software-bounded-contexts-relationships-in-action-part-i"><a href="https://pub.reza.rs/blog/b-2025-08-16-social-life-software-bc-rel-p1/">The Social Life of Software: Bounded Contexts Relationships in Action (Part I)</a><a class="headerlink" href="#the-social-life-of-software-bounded-contexts-relationships-in-action-part-i" title="Anchor link to this section for reference">&para;</a></h2>
-<!--suppress LongLine -->
-<div class="post-extra">
-    <div class="col">
-        <p class="post-date">2025-08-16 13:05:00</p>
-    </div>
-    <div class="col">
-
-        <a href="https://pub.reza.rs/blog/tags/ddd/">#ddd</a>
-
-    </div>
-</div>
-
-<p>We have all heard about Anti-Corruption Layers, Open-Host, Separate Ways, Conformist etc etc, it just happens that on a day to day basis we are dealing with these abstractions while we might not be very conscious about them. In this post, I try to provide concrete examples of how these Bounded Context relationships are in play.</p>
-<div class="post-link">
-
-    <a href="https://pub.reza.rs/blog/b-2025-08-16-social-life-software-bc-rel-p1/" title="The Social Life of Software: Bounded Contexts Relationships in Action (Part I)">
         Read more
     </a>
 

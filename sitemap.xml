@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://pub.reza.rs/</loc>
-         <lastmod>2026-07-11</lastmod>
+         <lastmod>2026-11-15</lastmod>
     </url>
     <url>
          <loc>https://pub.reza.rs/about/</loc>
@@ -37,79 +37,91 @@
          <lastmod>2026-07-11</lastmod>
     </url>
     <url>
+         <loc>https://pub.reza.rs/blog/b-2026-11-15-panama-err-handling-p1/</loc>
+         <lastmod>2026-11-15</lastmod>
+    </url>
+    <url>
          <loc>https://pub.reza.rs/blog/</loc>
-         <lastmod>2026-07-11</lastmod>
+         <lastmod>2026-11-15</lastmod>
     </url>
     <url>
          <loc>https://pub.reza.rs/blog/index-1/</loc>
-         <lastmod>2026-07-11</lastmod>
+         <lastmod>2026-11-15</lastmod>
     </url>
     <url>
          <loc>https://pub.reza.rs/blog/archive/2026/</loc>
-         <lastmod>2026-07-11</lastmod>
+         <lastmod>2026-11-15</lastmod>
     </url>
     <url>
          <loc>https://pub.reza.rs/blog/archive/2025/</loc>
-         <lastmod>2026-07-11</lastmod>
+         <lastmod>2026-11-15</lastmod>
     </url>
     <url>
          <loc>https://pub.reza.rs/blog/categories/Java/</loc>
-         <lastmod>2026-07-11</lastmod>
+         <lastmod>2026-11-15</lastmod>
     </url>
     <url>
          <loc>https://pub.reza.rs/blog/categories/Kotlin/</loc>
-         <lastmod>2026-07-11</lastmod>
+         <lastmod>2026-11-15</lastmod>
     </url>
     <url>
          <loc>https://pub.reza.rs/blog/categories/NIO/</loc>
-         <lastmod>2026-07-11</lastmod>
+         <lastmod>2026-11-15</lastmod>
     </url>
     <url>
          <loc>https://pub.reza.rs/blog/categories/ddd/</loc>
-         <lastmod>2026-07-11</lastmod>
+         <lastmod>2026-11-15</lastmod>
     </url>
     <url>
          <loc>https://pub.reza.rs/blog/tags/FFM/</loc>
-         <lastmod>2026-07-11</lastmod>
+         <lastmod>2026-11-15</lastmod>
     </url>
     <url>
          <loc>https://pub.reza.rs/blog/tags/asyn/</loc>
-         <lastmod>2026-07-11</lastmod>
+         <lastmod>2026-11-15</lastmod>
     </url>
     <url>
          <loc>https://pub.reza.rs/blog/tags/blog/</loc>
-         <lastmod>2026-07-11</lastmod>
+         <lastmod>2026-11-15</lastmod>
     </url>
     <url>
          <loc>https://pub.reza.rs/blog/tags/ddd/</loc>
-         <lastmod>2026-07-11</lastmod>
+         <lastmod>2026-11-15</lastmod>
+    </url>
+    <url>
+         <loc>https://pub.reza.rs/blog/tags/error/</loc>
+         <lastmod>2026-11-15</lastmod>
+    </url>
+    <url>
+         <loc>https://pub.reza.rs/blog/tags/ffi/</loc>
+         <lastmod>2026-11-15</lastmod>
     </url>
     <url>
          <loc>https://pub.reza.rs/blog/tags/foreign/</loc>
-         <lastmod>2026-07-11</lastmod>
+         <lastmod>2026-11-15</lastmod>
     </url>
     <url>
          <loc>https://pub.reza.rs/blog/tags/java/</loc>
-         <lastmod>2026-07-11</lastmod>
+         <lastmod>2026-11-15</lastmod>
     </url>
     <url>
          <loc>https://pub.reza.rs/blog/tags/kotlin/</loc>
-         <lastmod>2026-07-11</lastmod>
+         <lastmod>2026-11-15</lastmod>
     </url>
     <url>
          <loc>https://pub.reza.rs/blog/tags/native/</loc>
-         <lastmod>2026-07-11</lastmod>
+         <lastmod>2026-11-15</lastmod>
     </url>
     <url>
          <loc>https://pub.reza.rs/blog/tags/nio/</loc>
-         <lastmod>2026-07-11</lastmod>
+         <lastmod>2026-11-15</lastmod>
     </url>
     <url>
          <loc>https://pub.reza.rs/blog/tags/panama/</loc>
-         <lastmod>2026-07-11</lastmod>
+         <lastmod>2026-11-15</lastmod>
     </url>
     <url>
          <loc>https://pub.reza.rs/blog/tags/properdocs/</loc>
-         <lastmod>2026-07-11</lastmod>
+         <lastmod>2026-11-15</lastmod>
     </url>
 </urlset>
